@@ -3,6 +3,7 @@ from __future__ import annotations
 import random
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
+from constants import BLOCK_HEIGHT, BLOCK_WIDTH
 
 from coordinate import Coordinate
 if TYPE_CHECKING:
@@ -81,8 +82,49 @@ class Red_Ghost(Ghost):
         super().__init__(master)
         self.color = Red_Ghost.COLOR
 
-    # Override
     def move(self, dt: float) -> None:
+        from ai import A_Star
+        
+        x, y, _, _ = self.master.player.coordinate.position
+        col_p, row_p = x//BLOCK_WIDTH, y//BLOCK_HEIGHT
+        
+        x, y, _, _ = self.coordinate.position
+        col_g, row_g = x//BLOCK_WIDTH, y//BLOCK_HEIGHT
+        
+        self.ai = A_Star(self.master.maze, (int(col_p), int(row_p)), (int(col_g), int(row_g)))
+        
+        self.direction = self.ai.solve()
+        print(self.direction)
+        if self.direction == "right":
+            predict_position = self.coordinate.predict_move(Ghost.SPEED * dt, 0)
+            if self.master.maze.check_collision(predict_position):
+                self.direction = Ghost.DIRECTION[0]
+            else:
+                self.coordinate.move(Ghost.SPEED*dt, 0)
+        
+        elif self.direction == "left":
+            predict_position = self.coordinate.predict_move(-Ghost.SPEED * dt, 0)
+            if self.master.maze.check_collision(predict_position):
+                self.direction = Ghost.DIRECTION[0]
+            else:
+                self.coordinate.move(-Ghost.SPEED*dt, 0)
+        
+        elif self.direction == "down":
+            predict_position = self.coordinate.predict_move(0, Ghost.SPEED * dt)
+            if self.master.maze.check_collision(predict_position):
+                self.direction = Ghost.DIRECTION[0]
+            else:
+                self.coordinate.move(0, Ghost.SPEED*dt)
+
+        elif self.direction == "up":
+            predict_position = self.coordinate.predict_move(0, -Ghost.SPEED * dt)
+            if self.master.maze.check_collision(predict_position):
+                self.direction = Ghost.DIRECTION[0]
+            else:
+                self.coordinate.move(0, -Ghost.SPEED*dt)
+
+    # Override
+    def __move(self, dt: float) -> None:
         distanceX: float = self.master.player.coordinate.position[0] - self.coordinate.position[0]
         distanceY: float = self.master.player.coordinate.position[1] - self.coordinate.position[1]
 

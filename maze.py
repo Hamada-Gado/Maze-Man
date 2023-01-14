@@ -2,14 +2,13 @@ from __future__ import annotations
 import sys
 from typing import TYPE_CHECKING
 
-from constants import WIDTH, HEIGHT
+from constants import WIDTH, HEIGHT, BLOCK_WIDTH, BLOCK_HEIGHT
 
 if TYPE_CHECKING:
     from game import Game    
 
 class Maze:
-    BLOCK_WIDTH: int = 15 
-    BLOCK_HEIGHT: int = 15
+
     COLS: int = WIDTH//BLOCK_WIDTH # 40
     ROWS: int = HEIGHT//BLOCK_HEIGHT # 40
     BG_COLOR: str = "black"
@@ -42,14 +41,14 @@ class Maze:
         for x in range(Maze.COLS):
             for y in range(Maze.ROWS):
                 if self.maze[x][y] == 1:
-                    self.master.canvas.create_rectangle(x*Maze.BLOCK_WIDTH, y*Maze.BLOCK_HEIGHT, x*Maze.BLOCK_WIDTH + Maze.BLOCK_WIDTH, y*Maze.BLOCK_HEIGHT + Maze.BLOCK_HEIGHT, fill= Maze.BLOCK_COLOR, outline= Maze.BLOCK_COLOR) 
+                    self.master.canvas.create_rectangle(x*BLOCK_WIDTH, y*BLOCK_HEIGHT, x*BLOCK_WIDTH + BLOCK_WIDTH, y*BLOCK_HEIGHT + BLOCK_HEIGHT, fill= Maze.BLOCK_COLOR, outline= Maze.BLOCK_COLOR) 
 
     def check_collision(self, player_coords: tuple[float, float, float, float]) -> bool:
      
         for x in range(Maze.COLS):
             for y in range(Maze.ROWS):
                 if self.maze[x][y] == 1:
-                    block_coords = x*Maze.BLOCK_WIDTH, y*Maze.BLOCK_HEIGHT, x*Maze.BLOCK_WIDTH + Maze.BLOCK_WIDTH, y*Maze.BLOCK_HEIGHT + Maze.BLOCK_HEIGHT
+                    block_coords = x*BLOCK_WIDTH, y*BLOCK_HEIGHT, x*BLOCK_WIDTH + BLOCK_WIDTH, y*BLOCK_HEIGHT + BLOCK_HEIGHT
                     if Maze.aabb_collision(block_coords, player_coords):
                         return True
         return False

@@ -37,10 +37,10 @@ class A_Star:
     def neighbors(self, state: tuple[int, int]):
         col, row = state
         candidates = [
-            ("down", (col, row-1)),
-            ("up", (col, row+1)),
-            ("right", (col-1, row)),
-            ("left", (col+1, row))
+            ("up", (col, row-1)),
+            ("down", (col, row+1)),
+            ("left", (col-1, row)),
+            ("right", (col+1, row))
         ]
 
         result = []
@@ -67,14 +67,14 @@ class A_Star:
             self.num_explored += 1
             
             if node.state == self.target:
-                # actions: list[str] = []
-                # cells: list[tuple[int, int]] = []
-                # while node.parent is not None:
-                #     actions.append(node.action)
-                #     cells.append(node.state)
-                #     node = node.parent
+                actions: list[str] = []
+                cells: list[tuple[int, int]] = []
+                while node.parent is not None:
+                    actions.append(node.action)
+                    cells.append(node.state)
+                    node = node.parent
                 
-                return node.action # , node.state
+                return actions[-1]
             
             self.explored.add(node.state)
         
@@ -83,10 +83,3 @@ class A_Star:
                     child = Node(state= state, parent= node, action= action)
                     frontier.put(child)
                     
-                    
-def main():
-    from maze import Maze
-    print(A_Star(Maze(None), (7,1), (11, 2)).solve())
-
-if __name__ == "__main__":
-    main()

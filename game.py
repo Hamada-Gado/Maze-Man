@@ -36,10 +36,10 @@ class Game:
         self.pellet = Pellet(self)
 
         self.ghosts = []
-        self.ghosts.append(Orange_Ghost(self))
+        # self.ghosts.append(Orange_Ghost(self))
         self.ghosts.append(Red_Ghost(self))
-        self.ghosts.append(Blue_Ghost(self))
-        self.ghosts.append(Pink_Ghost(self))
+        # self.ghosts.append(Blue_Ghost(self))
+        # self.ghosts.append(Pink_Ghost(self))
 
         self.root.after(0, self._run)
         self.delta_time = time.time()
