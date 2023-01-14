@@ -56,7 +56,7 @@ class Game:
 
     def _run(self) -> None:
         self.delta_time = time.time() - self.delta_time
-        print(self.delta_time*1000) #! should be removed
+        # print(self.delta_time*1000) #! should be removed
 
         self.canvas.delete("all")
 
