@@ -1,8 +1,17 @@
+from __future__ import annotations
+import sys
+from typing import TYPE_CHECKING
+
+from constants import WIDTH, HEIGHT
+
+if TYPE_CHECKING:
+    from game import Game    
+
 class Maze:
     BLOCK_WIDTH: int = 15 
     BLOCK_HEIGHT: int = 15
-    COLS: int = Game.WIDTH//BLOCK_WIDTH # 40
-    ROWS: int = Game.HEIGHT//BLOCK_HEIGHT # 40
+    COLS: int = WIDTH//BLOCK_WIDTH # 40
+    ROWS: int = HEIGHT//BLOCK_HEIGHT # 40
     BG_COLOR: str = "black"
     BLOCK_COLOR: str = "blue"
     MAZE_FILE_PATH: str = sys.path[0] + "\\maze.txt"
@@ -29,7 +38,7 @@ class Maze:
         self.draw()
 
     def draw(self) -> None:
-        self.master.canvas.create_rectangle(0, 0, Game.WIDTH, Game.HEIGHT, fill= Maze.BG_COLOR)
+        self.master.canvas.create_rectangle(0, 0, WIDTH, HEIGHT, fill= Maze.BG_COLOR)
         for x in range(Maze.COLS):
             for y in range(Maze.ROWS):
                 if self.maze[x][y] == 1:
@@ -41,13 +50,14 @@ class Maze:
             for y in range(Maze.ROWS):
                 if self.maze[x][y] == 1:
                     block_coords = x*Maze.BLOCK_WIDTH, y*Maze.BLOCK_HEIGHT, x*Maze.BLOCK_WIDTH + Maze.BLOCK_WIDTH, y*Maze.BLOCK_HEIGHT + Maze.BLOCK_HEIGHT
-                    if aabb_collision(block_coords, player_coords):
+                    if Maze.aabb_collision(block_coords, player_coords):
                         return True
         return False
 
-def aabb_collision(a: tuple[float, float, float, float], b: tuple[float, float, float, float]) -> bool:
-        aX0, aY0, aX1, aY1 = a
-        bX0, bY0, bX1, bY1 = b
-        if  (aX0 < bX1) and  (aX1 > bX0) and  (aY0 < bY1) and  (aY1 > bY0):
-            return True
-        return False
+    @staticmethod
+    def aabb_collision(a: tuple[float, float, float, float], b: tuple[float, float, float, float]) -> bool:
+            aX0, aY0, aX1, aY1 = a
+            bX0, bY0, bX1, bY1 = b
+            if  (aX0 < bX1) and  (aX1 > bX0) and  (aY0 < bY1) and  (aY1 > bY0):
+                return True
+            return False

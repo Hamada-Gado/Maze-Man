@@ -1,7 +1,12 @@
 
-from abc import ABC, abstractmethod
+from __future__ import annotations
 import random
+from abc import ABC, abstractmethod
+from typing import TYPE_CHECKING
 
+from coordinate import Coordinate
+if TYPE_CHECKING:
+    from game import Game
 
 class Ghost(ABC):
     WIDTH: int = 20

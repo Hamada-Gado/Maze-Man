@@ -1,4 +1,10 @@
+from __future__ import annotations
+from typing import TYPE_CHECKING
 from typing import Callable
+
+from coordinate import Coordinate
+if TYPE_CHECKING:
+    from game import Game
 
 class PacMan:
     WIDTH: int = 20

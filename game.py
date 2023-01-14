@@ -1,14 +1,16 @@
 import time
 import tkinter as tk
+from constants import *
+from maze import Maze
+from pacman import PacMan
+from pellet import Pellet
+from ghost import *
 
 class Game:
-    DELAY = 30
-    WIDTH = 600
-    HEIGHT = 600
     
     def __init__(self) -> None:
         self.root: tk.Tk = tk.Tk()
-        self.canvas: tk.Canvas = tk.Canvas(self.root, width= Game.WIDTH, height= Game.HEIGHT)
+        self.canvas: tk.Canvas = tk.Canvas(self.root, width= WIDTH, height= HEIGHT)
         
         self.keys: dict[str, bool] = dict()
         self.root.bind('<Key>', self.key_listener)
@@ -71,7 +73,7 @@ class Game:
             self.restart()
             return
 
-        self.root.after(Game.DELAY, self._run)
+        self.root.after(DELAY, self._run)
         self.delta_time = time.time()
 
     def key_listener(self, event: tk.Event) -> None:
@@ -81,53 +83,8 @@ class Game:
         position = self.player.coordinate.position
 
         for ghost in self.ghosts:
-            if aabb_collision(ghost.coordinate.position, position):
+            if Maze.aabb_collision(ghost.coordinate.position, position):
                 return True
 
         return False
-
-class Coordinate:
-    def __init__(self, x: float, y: float, width: int, height: int) -> None:
-        self._width: int = width
-        self._height: int = height
-        self._x0: float = x
-        self._y0: float = y
-        self._x1: float = self._x0 + self._width
-        self._y1: float = self._y0 + self._height
-
-    def predict_move(self, dx: float, dy: float) -> tuple[float, float, float, float]:
-        return (self._x0 + dx, self._y0 + dy, self._x1 + dx, self._y1 + dy)
-
-    def move(self, dx: float, dy: float) -> None:
-        self._x0 += dx
-        self._y0 += dy
-        self._x1 = self._x0 + self._width
-        self._y1 = self._y0 + self._height
-
-        # to wrap-around the boundaries
-        if self._x0 > Game.WIDTH:
-            self._x0 = 0
-            self._x1 = self._x0 + self._width
-        
-        elif self._x0 < -self._width:
-            self._x0 = Game.WIDTH
-            self._x1 = self._x0 + self._width
-
-        elif self._y0 > Game.HEIGHT:
-            self._y0 = 0
-            self._y1 = self._y0 + self._height
-
-        elif self._y0 < -self._height:
-            self._y0 = Game.HEIGHT
-            self._y1 = self._y0 + self._height
-
-    def set_random_position(self) -> None:
-        self._x0 = random.randint(0, Game.WIDTH - self._width)
-        self._y0 = random.randint(0, Game.HEIGHT - self._height)
-        self._x1 = self._x0 + self._width
-        self._y1 = self._y0 + self._height
-
-    @property
-    def position(self) -> tuple[float, float, float, float]:
-        return (self._x0, self._y0, self._x1, self._y1)
 

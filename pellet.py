@@ -1,3 +1,10 @@
+from __future__ import annotations
+from typing import TYPE_CHECKING
+
+from coordinate import Coordinate
+if TYPE_CHECKING:
+    from game import Game
+
 class Pellet:
     WIDTH: int = 7
     HEIGHT: int = 7
