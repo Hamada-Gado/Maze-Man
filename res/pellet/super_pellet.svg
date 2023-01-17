@@ -2,9 +2,9 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="2.6458333mm"
-   height="2.6458333mm"
-   viewBox="0 0 2.6458333 2.6458333"
+   width="5.2916665mm"
+   height="5.2916665mm"
+   viewBox="0 0 5.2916666 5.2916666"
    version="1.1"
    id="svg5"
    sodipodi:docname="super_pellet.svg"
@@ -25,8 +25,8 @@
      inkscape:document-units="mm"
      showgrid="false"
      inkscape:zoom="34.832509"
-     inkscape:cx="14.641495"
-     inkscape:cy="8.4116824"
+     inkscape:cx="19.407158"
+     inkscape:cy="6.531255"
      inkscape:window-width="1920"
      inkscape:window-height="1051"
      inkscape:window-x="-9"
@@ -40,12 +40,12 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-1.8673502,-5.6045202)">
+     transform="translate(-0.54443359,-4.2816036)">
     <circle
        style="fill:#ffd93d;fill-opacity:1;stroke-width:0.318823;paint-order:stroke fill markers"
        id="path2019"
        cx="3.1902668"
        cy="6.9274368"
-       r="1.3229166" />
+       r="2.6458333" />
   </g>
 </svg>

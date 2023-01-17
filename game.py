@@ -1,4 +1,6 @@
 import sys, pygame as pg
+
+from game_object.pacman import PacMan
 pg.init()
 
 from constants import SCREEN_WIDTH, SCREEN_HEIGHT, FPS
@@ -10,12 +12,12 @@ class Game:
         pg.display.set_caption("Pac-Man")
         self.clock: pg.time.Clock = pg.time.Clock()
         self.fps: int = FPS
+        self.delta_time: float = 0
         
         self._init()
         
     def _init(self) -> None:
-        
-        self.delta_time: float = 0
+        self.pacman: PacMan = PacMan(self, x= 10, y= 20)
         
     def restart(self) -> None:
         self._init()
@@ -25,17 +27,26 @@ class Game:
             pg.quit()
             sys.exit()
         
+    def update(self):
+        self.pacman.update()
     
+    def draw(self):
+        self.window.fill("#0000ff")
+        self.pacman.draw()
+        
+        pg.display.flip()
+          
     def run(self) -> None:
         
         while True:
+            self.delta_time = self.clock.get_time()/1000
             
             event: pg.event.Event
             
             for event in pg.event.get():
                 self.terminate(event)
               
-
-            pg.display.flip()  
-            self.delta_time = self.clock.get_time()/1000
-            self.clock.tick(FPS)
+            self.update()
+            self.draw()
+            
+            self.clock.tick(self.fps)
