@@ -1,8 +1,10 @@
 from typing import Any
 import pygame as pg
+
 pg.init()
 
 from .game_object import Game_Object 
+from constants import GAME_OBJECT_WIDTH, GAME_OBJECT_HEIGHT, SCREEN_WIDTH, SCREEN_HEIGHT
 
 class PacMan(Game_Object):
     
@@ -10,16 +12,6 @@ class PacMan(Game_Object):
     DOWN: str = "down"
     LEFT: str = "left"
     RIGHT: str = "right"
-    
-    # images
-    images: list[pg.surface.Surface] = list()
-    for i in range(3):
-        images.append(pg.image.load(f"res/pacman/image{i}.svg"))
-              
-    tmp = images.copy()
-    tmp.reverse()
-    images.extend(tmp)
-    del tmp
         
     speed: int = 100
     
@@ -28,12 +20,23 @@ class PacMan(Game_Object):
         super().__init__(*args, **kwargs)
 
         self.current_frame: float = 0
-        self.frame_rate: float = 5.5
+        self.frame_rate: float = 20
         self.direction: str = PacMan.RIGHT
+        self.load_frames()
+
+    def load_frames(self):
+        self.sprite_sheet: pg.surface.Surface = pg.image.load("../res/pacman.png").convert_alpha()
+        self.frames: list[pg.surface.Surface] = []
+        
+        for i in range(3):
+            for j in range(3):
+                self.frames.append(pg.Surface((GAME_OBJECT_WIDTH, GAME_OBJECT_HEIGHT), pg.SRCALPHA))
+                self.frames[-1].blit(self.sprite_sheet, (0, 0), (j*GAME_OBJECT_HEIGHT, i*GAME_OBJECT_WIDTH, GAME_OBJECT_WIDTH, GAME_OBJECT_HEIGHT))
 
     def update(self) -> None:
         keys = pg.key.get_pressed()
         
+        # move
         if keys[pg.K_UP] or keys[pg.K_w]:
             self.direction = PacMan.UP
             self.add_coordinate(y= -self.speed*self.master.delta_time)
@@ -46,12 +49,23 @@ class PacMan(Game_Object):
         elif keys[pg.K_RIGHT] or keys[pg.K_d]:
             self.direction = PacMan.RIGHT
             self.add_coordinate(x= self.speed*self.master.delta_time)
+
+        # check to wrap to around
+        if self.coordinate.y < -GAME_OBJECT_HEIGHT:
+            self.set_coordinate(y= SCREEN_HEIGHT)
+        if self.coordinate.y > SCREEN_HEIGHT:
+            self.set_coordinate(y= -GAME_OBJECT_HEIGHT)
+        if self.coordinate.x < -GAME_OBJECT_WIDTH:
+            self.set_coordinate(x= SCREEN_WIDTH)
+        if self.coordinate.x > SCREEN_WIDTH:
+            self.set_coordinate(x= -GAME_OBJECT_WIDTH)
         
+        # update frames
         self.current_frame += (self.frame_rate * self.master.delta_time) 
-        self.current_frame = self.current_frame if self.current_frame < 6 else 0
+        self.current_frame = self.current_frame if self.current_frame < len(self.frames) else 0
     
     def draw(self) -> None:
-        image = self.images[int(self.current_frame)]
+        image = self.frames[int(self.current_frame)]
         if self.direction == PacMan.UP:
             image = pg.transform.rotate(surface= image, angle= 90)
         elif self.direction == PacMan.DOWN:

@@ -44,8 +44,8 @@ class Game_Object(ABC):
     def draw(self) -> None: ...
 
     def set_coordinate(self, x: float | int | None = None, y: float | int | None = None):
-        self.coordinate.x = x or self.coordinate.x
-        self.coordinate.y = y or self.coordinate.y
+        self.coordinate.x = x if x is not None else self.coordinate.x
+        self.coordinate.y = y if y is not None else self.coordinate.y
         
         self.rect.topleft    = (self.coordinate.x, self.coordinate.y) # type: ignore
         self.hit_box.topleft = (self.coordinate.x + self.offset_x/2, self.coordinate.y + self.offset_y/2) # type: ignore
