@@ -1,10 +1,14 @@
 from typing import Any
+
 import pygame as pg
 
 pg.init()
 
-from .game_object import Game_Object 
-from constants import GAME_OBJECT_WIDTH, GAME_OBJECT_HEIGHT, SCREEN_WIDTH, SCREEN_HEIGHT
+from constants import (GAME_OBJECT_HEIGHT, GAME_OBJECT_WIDTH, SCREEN_HEIGHT,
+                       SCREEN_WIDTH)
+
+from .game_object import Game_Object
+
 
 class PacMan(Game_Object):
     

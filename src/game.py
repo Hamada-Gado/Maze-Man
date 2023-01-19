@@ -1,15 +1,19 @@
-import sys, pygame as pg
+import sys
+
+import pygame as pg
 
 from game_object.pacman import PacMan
 from maze import Maze
+
 pg.init()
 
-from constants import SCREEN_WIDTH, SCREEN_HEIGHT, FPS
+from constants import FPS, SCREEN_HEIGHT, SCREEN_WIDTH
+
 
 class Game:
     
     def __init__(self) -> None:
-        self.window: pg.surface.Surface = pg.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), flags= pg.DOUBLEBUF)
+        self.window: pg.surface.Surface = pg.display.set_mode((SCREEN_WIDTH+3, SCREEN_HEIGHT+3), flags= pg.RESIZABLE) # + 2 so that the lower and most right walls can appear
         pg.display.set_caption("Pac-Man")
         self.clock: pg.time.Clock = pg.time.Clock()
         self.fps: int = FPS
@@ -18,53 +22,31 @@ class Game:
         self._init()
         
     def _init(self) -> None:
-        self.pacman: PacMan = PacMan(self, x= 10, y= 20)
+        self.pacman: PacMan = PacMan(self, x= 40, y= 40)
+        self.maze = Maze(self)
+        
+        self.restart()
         
     def restart(self) -> None:
-        self._init()
+        pass
         
     def terminate(self, event: pg.event.Event) -> None:
         if event.type == pg.QUIT or (event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE):
             pg.quit()
             sys.exit()
         
-    def update(self):
-        # self.pacman.update()
-        self.maze._create_random_maze()
+    def update(self) -> None:
+        self.pacman.update()
+        self.maze.update()
     
-    def draw(self):
-        self.window.fill("#0000ff")
-        # self.pacman.draw()
-        self.draw_maze()
+    def draw(self) -> None:
+        self.window.fill("#e98a36")
+        self.maze.draw()
+        self.pacman.draw()
         
         pg.display.flip()
      
-    #! should be removed     
-    def draw_maze(self):
-        
-        for r in range(10):
-            for c in range(10):
-                if self.maze.maze[r][c].visited:
-                    color = "#e98a36"
-                    if (1, 0) in self.maze.maze[r][c].connected:
-                        pg.draw.rect(self.window, color, (c*(20+10),r*(20 + 10) - 10, 20, 10))
-                    if (-1, 0) in self.maze.maze[r][c].connected:
-                        pg.draw.rect(self.window, color, (c*(20+10),r*(20 + 10), 20, 30))
-                    if (0, -1) in self.maze.maze[r][c].connected:
-                        pg.draw.rect(self.window, color, (c*(20+10) - 10,r*(20 + 10), 10, 20))
-                    if (0, 1) in self.maze.maze[r][c].connected:
-                        pg.draw.rect(self.window, color, (c*(20+10),r*(20 + 10), 30, 20))
-                    
-                else:
-                    color = "#ffffff"
-                    
-                if self.maze.maze[r][c] == self.maze.current_node:
-                    color = "#00ff00"
-                    
-                pg.draw.rect(self.window, color, (c*(20+10),r*(20+10), 20, 20))
-                
     def run(self) -> None:
-        self.maze = Maze(10, 10)
         
         while True:
             self.delta_time = self.clock.get_time()/1000
@@ -76,4 +58,4 @@ class Game:
               
             self.update()
             self.draw()
-            self.clock.tick(10)
+            self.clock.tick(self.fps)
