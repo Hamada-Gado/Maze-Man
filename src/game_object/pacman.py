@@ -21,12 +21,14 @@ class PacMan(Game_Object):
     
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         f"""{super().__doc__}"""
-        super().__init__(*args, **kwargs)
+        
+        super().__init__(width= 32, height= 32, offset_x= 5, offset_y= 5, *args, **kwargs)
 
         self.current_frame: float = 0
         self.frame_rate: float = 20
         self.direction: str = PacMan.RIGHT
         self.load_frames()
+        self.collision_count: int = 0
 
     def load_frames(self):
         self.sprite_sheet: pg.surface.Surface = pg.image.load("../res/pacman.png").convert_alpha()
@@ -34,8 +36,9 @@ class PacMan(Game_Object):
         
         for i in range(3):
             for j in range(3):
-                self.frames.append(pg.Surface((GAME_OBJECT_WIDTH, GAME_OBJECT_HEIGHT), pg.SRCALPHA))
-                self.frames[-1].blit(self.sprite_sheet, (0, 0), (j*GAME_OBJECT_HEIGHT, i*GAME_OBJECT_WIDTH, GAME_OBJECT_WIDTH, GAME_OBJECT_HEIGHT))
+                self.frames.append(pg.Surface((self.width, self.height), pg.SRCALPHA))
+                self.frames[-1].blit(self.sprite_sheet, (0, 0), (j*self.width, i*self.height, self.width, self.height))
+
 
     def update(self) -> None:
         keys = pg.key.get_pressed()
@@ -63,7 +66,23 @@ class PacMan(Game_Object):
             self.set_coordinate(x= SCREEN_WIDTH)
         if self.coordinate.x > SCREEN_WIDTH:
             self.set_coordinate(x= -GAME_OBJECT_WIDTH)
-        
+            
+        # collision
+        for _, wall in self.master.maze.walls.values():
+            if not self.hit_box.colliderect(wall):
+                continue
+            
+            self.collision_count += 1
+            if self.direction == PacMan.UP:
+                self.set_coordinate(y= wall.bottom)
+            elif self.direction == PacMan.DOWN:
+                self.set_coordinate(y= wall.top - self.height)
+            elif self.direction == PacMan.LEFT:
+                self.set_coordinate(x= wall.right)
+            elif self.direction == PacMan.RIGHT:
+                self.set_coordinate(x= wall.left - self.width)
+                
+            break
         # update frames
         self.current_frame += (self.frame_rate * self.master.delta_time) 
         self.current_frame = self.current_frame if self.current_frame < len(self.frames) else 0

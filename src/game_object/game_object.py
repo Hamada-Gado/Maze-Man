@@ -16,7 +16,7 @@ from constants import GAME_OBJECT_HEIGHT, GAME_OBJECT_WIDTH
 
 class Game_Object(ABC):
     
-    def __init__(self, master: Game, offset_x: int = 0, offset_y: int = 0, x: int = 0, y: int = 0) -> None:
+    def __init__(self, master: Game, width: int = GAME_OBJECT_WIDTH, height: int = GAME_OBJECT_HEIGHT, offset_x: int = 0, offset_y: int = 0, x: int = 0, y: int = 0) -> None:
         """
         master : Game
         offset_x : int = 0
@@ -29,8 +29,8 @@ class Game_Object(ABC):
         self.offset_x: int = offset_x
         self.offset_y: int = offset_y
         
-        self.width: int  = GAME_OBJECT_WIDTH
-        self.height: int = GAME_OBJECT_HEIGHT
+        self.width: int  = width
+        self.height: int = height
         
         self.coordinate: pg.Vector2  = pg.Vector2()
         self.rect: pg.Rect = pg.Rect(self.coordinate.x, self.coordinate.y, self.width, self.height)

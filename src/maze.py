@@ -135,8 +135,7 @@ class Maze:
     def update(self):
         pass
     
-    def draw(self):
-       
+    def draw(self): 
         # draw walls
         for orientation, rect in self.walls.values():
             if orientation == "H":

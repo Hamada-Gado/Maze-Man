@@ -22,7 +22,7 @@ class Game:
         self._init()
         
     def _init(self) -> None:
-        self.pacman: PacMan = PacMan(self, x= 40, y= 40)
+        self.pacman: PacMan = PacMan(self, x= 41, y= 41)
         self.maze = Maze(self)
         
         self.restart()
