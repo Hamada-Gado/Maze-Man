@@ -71,10 +71,13 @@ class Maze:
 
             visited.append(current_node)
             num_visited += 1
+        
+        current_node.visited = True
       
     #! should be removed
     def _create_random_maze(self):
         if self.num_visited >= self.cols * self.rows:
+            self.current_node.visited = True
             return
         
         self.current_node.visited = True
