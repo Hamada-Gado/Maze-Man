@@ -1,47 +1,53 @@
 from collections import deque
 import random
-import time
 
 class Node:
 
-    UP: str = "up"
-    DOWN: str = "down"
-    LEFT: str = "left"
-    RIGHT: str = "right"
+    UP: tuple[int, int] = (1, 0)
+    DOWN: tuple[int, int] = (-1, 0)
+    LEFT: tuple[int, int] = (0, -1)
+    RIGHT: tuple[int, int] = (0, 1)
     
-    def __init__(self, col: int, row: int) -> None:
+    def __init__(self, row: int, col: int) -> None:
         self.col: int = col
         self.row: int = row
-        self.connected: str = ""
+        self.visited: bool = False
+        self.connected: list[tuple[int, int]] = list()
         
-    def __str__(self) -> str:
-        return f"col, row: {(self.col, self.row)}, dir: {self.connected}"
+    def __repr__(self) -> str:
+        return f"|row, col: {(self.row, self.col)}, dir: {self.connected}|"
 
 class Maze:
     
-    def __init__(self, width: int, height: int, cols: int, rows: int) -> None:
-        self.width = width
-        self.height = height
-        self.cols = cols
-        self.rows = rows
-        self.maze: list[list[Node]] = [[Node(col, row) for row in range(self.rows)] for col in range(self.cols)]
+    def __init__(self, cols: int, rows: int) -> None:
+        self.cols: int = cols
+        self.rows: int = rows
+        self.maze: list[list[Node]] = [[Node(row, col) for col in range(self.cols)] for row in range(self.rows)]
         
-    def get_neighbors(self, node: Node) -> dict[str, Node]:
+        #! should be removed
+        self.current_node: Node = random.choice(random.choice(self.maze))
+        
+        self.visited: deque[Node] = deque()
+        self.visited.append(self.current_node)
+        
+        self.num_visited = 1
+        
+    def get_neighbors(self, node: Node) -> dict[tuple[int, int], Node]:
         col, row = node.col, node.row
         candidates = [
-            (Node.UP, (col, row-1)),
-            (Node.DOWN, (col, row+1)),
-            (Node.LEFT, (col-1, row)),
-            (Node.RIGHT, (col+1, row))
+            (Node.UP, (row-1, col)),
+            (Node.DOWN, (row+1, col)),
+            (Node.LEFT, (row, col-1)),
+            (Node.RIGHT, (row, col+1))
         ]
         
-        result: dict[str, Node] = {}
-        for direction, (c, r) in candidates:
-            if 0 <= r < self.rows and 0 <= c < self.cols and not self.maze[c][r].connected:
-                result[direction] = self.maze[c][r]
+        result: dict[tuple[int, int], Node] = {}
+        for direction, (r, c) in candidates:
+            if 0 <= r < self.rows and 0 <= c < self.cols and not self.maze[r][c].visited :
+                result[direction] = self.maze[r][c]
                 
         return result
-        
+     
     def create_random_maze(self):
         
         current_node: Node = random.choice(random.choice(self.maze))
@@ -51,47 +57,36 @@ class Maze:
         
         num_visited = 1
         
-        while num_visited <= self.cols * self.rows:
-            # self.print_maze()
-            # print("\n\n")
-            # time.sleep(1)
-            current_node = visited[-1]
-            neighbors: dict[str, Node] = self.get_neighbors(current_node)
+        while num_visited < self.cols * self.rows: 
+            current_node.visited = True
+            neighbors: dict[tuple[int, int], Node] = self.get_neighbors(current_node)
             
             if neighbors == {}:
-                print(current_node)
-                print("poped")
                 current_node = visited.pop()
-                print(current_node)
                 continue
             
-            direction: str = random.choice(list(neighbors.keys()))
-            current_node.connected = direction
-            next_node: Node = neighbors[direction]
-                        
-            visited.append(next_node)
+            direction: tuple[int, int] = random.choice(list(neighbors.keys()))
+            current_node.connected.append(direction)
+            current_node = neighbors[direction]
+
+            visited.append(current_node)
             num_visited += 1
-            
-    def print_maze(self):
-        maze: list[list[str]] = [["" for _ in range(self.rows)] for _ in range(self.cols)]
+      
+    #! should be removed
+    def _create_random_maze(self):
+        if self.num_visited >= self.cols * self.rows:
+            return
         
-        for c in range(self.cols):
-            for r in range(self.rows):
-                if self.maze[c][r].connected == Node.UP:
-                    maze[c][r] = "^"
-                elif self.maze[c][r].connected == Node.DOWN:
-                    maze[c][r] = "|/"
-                elif self.maze[c][r].connected == Node.LEFT:
-                    maze[c][r] = "<-"
-                elif self.maze[c][r].connected == Node.RIGHT:
-                    maze[c][r] = "->"
-                else:
-                    maze[c][r] = "?"
+        self.current_node.visited = True
+        neighbors: dict[tuple[int, int], Node] = self.get_neighbors(self.current_node)
+        
+        if neighbors == {}:
+            self.current_node = self.visited.pop()
+            return
+        
+        direction: tuple[int, int] = random.choice(list(neighbors.keys()))
+        self.current_node.connected.append(direction)
+        self.current_node = neighbors[direction]
                     
-        for _ in range(len(maze)):
-            print(maze[_])
-        
-        
-m = Maze(600, 600, 15, 15)
-m.create_random_maze()
-m.print_maze()
+        self.visited.append(self.current_node)
+        self.num_visited += 1

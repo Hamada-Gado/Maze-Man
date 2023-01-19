@@ -1,6 +1,7 @@
 import sys, pygame as pg
 
 from game_object.pacman import PacMan
+from maze import Maze
 pg.init()
 
 from constants import SCREEN_WIDTH, SCREEN_HEIGHT, FPS
@@ -28,15 +29,28 @@ class Game:
             sys.exit()
         
     def update(self):
-        self.pacman.update()
+        # self.pacman.update()
+        self.maze.create_random_maze()
     
     def draw(self):
         self.window.fill("#0000ff")
-        self.pacman.draw()
+        # self.pacman.draw()
+        
+        for r in range(5):
+            for c in range(5):
+                if self.maze.maze[r][c].visited:
+                    if self.maze.maze[r][c] == self.maze.current_node:
+                        color = "#00ff00"
+                    else:
+                        color = "#e98a36"
+                    pg.draw.rect(self.window, color, (c*(20+10),r*(20+10), 20, 20))
+                else:
+                    pg.draw.rect(self.window, "#ffffff", ( c*(20+10), r*(20+10),20, 20))
         
         pg.display.flip()
           
     def run(self) -> None:
+        self.maze = Maze(5, 5)
         
         while True:
             self.delta_time = self.clock.get_time()/1000
@@ -49,4 +63,4 @@ class Game:
             self.update()
             self.draw()
             
-            self.clock.tick(self.fps)
+            self.clock.tick(1)
