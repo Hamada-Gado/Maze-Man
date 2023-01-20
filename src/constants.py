@@ -15,3 +15,5 @@ class Direction(Enum):
     LEFT = auto()
     RIGHT = auto()
     NONE = auto()
+
+    ALL = [NONE, UP, DOWN, RIGHT, LEFT]
