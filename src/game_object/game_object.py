@@ -33,11 +33,15 @@ class Game_Object(ABC):
 
         self.set_coordinate(x, y)
 
+    @property
+    def get_coordinate(self) -> tuple[float, float]:
+        return (self.coordinate.x, self.coordinate.y)
+
     def set_coordinate(self, x: float | int | None = None, y: float | int | None = None):
         self.coordinate.x = x if x is not None else self.coordinate.x
         self.coordinate.y = y if y is not None else self.coordinate.y
         
-        self.rect.topleft    = (self.coordinate.x, self.coordinate.y) # type: ignore
+        self.rect.topleft    = self.get_coordinate # type: ignore
         self.hit_box.topleft = (self.coordinate.x + self.offset_x/2, self.coordinate.y + self.offset_y/2) # type: ignore
     
     def add_coordinate(self, x: float | int = 0, y: float | int = 0):

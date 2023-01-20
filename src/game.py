@@ -1,6 +1,7 @@
 import sys
 
 import pygame as pg
+from game_object.ghost import Red_Ghost
 
 from game_object.pacman import PacMan
 from maze import Maze
@@ -22,8 +23,9 @@ class Game:
         self._init()
         
     def _init(self) -> None:
-        self.pacman: PacMan = PacMan(self, x= 45, y= 45)
         self.maze = Maze(self)
+        self.pacman: PacMan = PacMan(self, x= 9*40 + 3, y= 10*40 + 3)
+        self.red_ghost: Red_Ghost = Red_Ghost(self, x= 45, y= 45)
         
         self.restart()
         
@@ -37,12 +39,13 @@ class Game:
         
     def update(self) -> None:
         self.pacman.update()
-        self.maze.update()
-    
+        self.red_ghost.update()
+        
     def draw(self) -> None:
         self.window.fill("#000000")
         self.maze.draw()
         self.pacman.draw()
+        self.red_ghost.draw()
         
         pg.display.flip()
      

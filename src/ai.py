@@ -1,20 +1,27 @@
 from __future__ import annotations
-from queue import PriorityQueue
 
+from collections import deque
+from queue import PriorityQueue
 from typing import TYPE_CHECKING
 
 from constants import Direction
 
 if TYPE_CHECKING:
     from game import Game
-    from maze import Maze, Cell
+from maze import Maze, Cell
 
 class Ai:
     
     def __init__(self, master: Game) -> None:
         self.master: Game = master
-        self.path: list[tuple[str, tuple[int, int]]] = list()
+        self.path: deque[tuple[Direction, Cell]] = deque()
         self.a_star: A_Star = A_Star(self.master.maze, tuple(), tuple())
+        
+    def solve(self, target: tuple[int, int], agent: tuple[int, int]) -> None:
+        self.a_star.target = target
+        self.a_star.agent = agent
+        self.path = self.a_star.solve()
+        return self.path
         
 class Ai_Node:
     
@@ -55,18 +62,18 @@ class A_Star:
 
         result: list[tuple[Direction, Cell]] = []
         for action, (r, c) in candidates:
-            if 0 <= r < self.maze.rows and 0 <= c < self.maze.cols and action in self.maze.maze[r][c].connected:
+            if 0 <= r < self.maze.rows and 0 <= c < self.maze.cols and (action in self.maze.maze[r][c].connected or action in self.maze.maze[row][col].connected):
                 result.append((action, self.maze.maze[r][c]))
         return result
     
-    def solve(self):
-        self.num_explored: int = 0
+    def solve(self) -> deque[tuple[Direction, Cell]]:
+        num_explored: int = 0
         
         start: Ai_Node = Ai_Node(state= self.maze.maze[self.agent[0]][self.agent[1]], target= self.target, parent= None, action= Direction.NONE)
         frontier: PriorityQueue = PriorityQueue(0)
         frontier.put(start, block= False)
         
-        self.explored: set = set()
+        explored: set = set()
         
         while True:
             
@@ -74,24 +81,26 @@ class A_Star:
                 raise Exception("No solution")
             
             node: Ai_Node = frontier.get(block= False)
-            self.num_explored += 1
+            num_explored += 1
             
             if (node.state.row, node.state.col) == self.target:
-                actions: list[Direction] = []
-                cells: list[Cell] = []
+                path: deque[tuple[Direction, Cell]] = deque()
+                
                 while node.parent is not None:
-                    actions.append(node.action)
-                    cells.append(node.state)
+                    path.appendleft((node.action, node.state))
                     node = node.parent
                 
-                actions.reverse()
-                cells.reverse()
-                
-                return actions, cells
+                return path
             
-            self.explored.add(node.state)
+            explored.add(node.state)
         
             for action, state in self.neighbors(node.state):
-                if state not in self.explored:
+                if state not in explored:
                     child = Ai_Node(state= state, target= self.target, parent= node, action= action)
                     frontier.put(child)
+                    
+         
+if __name__ == "__main__":           
+    m = Maze(None, 15, 15)
+    ai = Ai(type("m", (), {"maze": m}))
+    print(ai.solve((11, 0), (6, 3)))

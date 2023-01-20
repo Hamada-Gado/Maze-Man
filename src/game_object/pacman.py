@@ -77,5 +77,5 @@ class PacMan(Game_Object):
         self.current_frame += (self.frame_rate * self.master.delta_time) 
         self.current_frame = self.current_frame if self.current_frame < len(self.frames[self.direction]) else 0
     
-    def draw(self) -> None:        
+    def draw(self) -> None:
         self.master.window.blit(self.frames[self.direction][int(self.current_frame)], self.rect)

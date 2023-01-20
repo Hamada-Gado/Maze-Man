@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from abc import ABC
+from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
-from constants import Direction
+from constants import CELL_HEIGHT, CELL_WIDTH, Direction
 
 if TYPE_CHECKING:
     from game import Game
@@ -18,9 +18,8 @@ pg.init()
 
 class Ghost(Game_Object, ABC):
     
-    def __init__(self, master: Game, width: int = 25, height: int = 25, speed: int = 0, offset_x: int = 0, offset_y: int = 0, x: int = 0, y: int = 0) -> None:
+    def __init__(self, master: Game, width: int = 25, height: int = 0, speed: int = 50, offset_x: int = 0, offset_y: int = 0, x: int = 0, y: int = 0) -> None:
         super().__init__(master, width, height, speed, offset_x, offset_y, x, y)
-        
         self.ai: Ai = Ai(self.master)
          
         self.current_frame: float = 0
@@ -31,14 +30,63 @@ class Ghost(Game_Object, ABC):
         self.frames: dict[Direction, list[pg.surface.Surface]] = dict()
         
         # sprite sheet is 2 x 5 and each frame is 25 x 25
-        for i, direction in zip(range(5), Direction.ALL.value):
+        for i, direction in zip(range(5), Direction):
             self.frames[direction] = list()            
             for j in range(2):
                 self.frames[direction].append(pg.Surface((self.width, self.height), pg.SRCALPHA)) 
                 self.frames[direction][-1].blit(self.sprite_sheet, (0, 0), (j*self.width, i*self.height, self.width, self.height))
-      
-    def update(self) -> None:
-        return super().update()
-                
+
+    @abstractmethod
+    def update(self) -> None: ...
+               
     def draw(self) -> None:
         self.master.window.blit(self.frames[self.direction][int(self.current_frame)], self.rect)
+
+        
+class Red_Ghost(Ghost):
+    
+    def __init__(self, master: Game, width: int = 25, height: int = 25, speed: int = 25, offset_x: int = 0, offset_y: int = 0, x: int = 0, y: int = 0) -> None:
+        super().__init__(master, width, height, speed, offset_x, offset_y, x, y)
+        self.load_frames("../res/red ghost.png")
+        
+    def update(self):
+        # make a path to target if finished the last one
+        if not self.ai.path:
+            target = self.master.pacman.get_coordinate
+            print(target)
+            target = int(target[1] / CELL_HEIGHT), int(target[0] / CELL_WIDTH)
+            
+            agent  = self.get_coordinate
+            agent  = int(agent[1] / CELL_HEIGHT), int(agent[0] / CELL_WIDTH)
+            
+            print(target, agent)
+            self.ai.solve(target, agent)
+            print(self.ai.path)
+            
+        self.direction, next_cell = self.ai.path[0]
+        
+        # move
+        # change direction if reached next cell
+        if self.direction == Direction.UP:
+            self.add_coordinate(y= -self.speed*self.master.delta_time)
+            if self.hit_box.bottom > next_cell.row * CELL_HEIGHT:
+                self.ai.path.popleft()
+        elif self.direction == Direction.DOWN:
+            self.add_coordinate(y= self.speed*self.master.delta_time)
+            if self.hit_box.top < next_cell.row * CELL_HEIGHT:
+                self.ai.path.popleft()
+        elif self.direction == Direction.LEFT:
+            self.add_coordinate(x= -self.speed*self.master.delta_time)
+            if self.hit_box.right < next_cell.col * CELL_WIDTH:
+                self.ai.path.popleft()
+        elif self.direction == Direction.RIGHT:
+            self.add_coordinate(x= self.speed*self.master.delta_time)
+            if self.hit_box.left > next_cell.col * CELL_WIDTH:
+                self.ai.path.popleft()
+                
+        self.check_collision()
+        
+        #? update frames
+        
+    def draw(self) -> None:
+        super().draw()

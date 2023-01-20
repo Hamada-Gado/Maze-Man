@@ -10,10 +10,8 @@ ROWS: int               = SCREEN_HEIGHT // CELL_HEIGHT #* 15
 
 class Direction(Enum):
     
+    NONE = auto()
     UP = auto()
     DOWN = auto()
-    LEFT = auto()
     RIGHT = auto()
-    NONE = auto()
-
-    ALL = [NONE, UP, DOWN, RIGHT, LEFT]
+    LEFT = auto()
