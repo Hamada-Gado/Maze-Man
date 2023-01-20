@@ -4,19 +4,13 @@ import pygame as pg
 
 pg.init()
 
-from constants import (GAME_OBJECT_HEIGHT, GAME_OBJECT_WIDTH, SCREEN_HEIGHT,
-                       SCREEN_WIDTH)
+from constants import Direction, GAME_OBJECT_HEIGHT, GAME_OBJECT_WIDTH, SCREEN_HEIGHT, SCREEN_WIDTH
 
 from .game_object import Game_Object
 
 
 class PacMan(Game_Object):
     
-    UP: str = "up"
-    DOWN: str = "down"
-    LEFT: str = "left"
-    RIGHT: str = "right"
-        
     speed: int = 100
     
     def __init__(self, *args: Any, **kwargs: Any) -> None:
@@ -26,9 +20,8 @@ class PacMan(Game_Object):
 
         self.current_frame: float = 0
         self.frame_rate: float = 20
-        self.direction: str = PacMan.RIGHT
+        self.direction: Direction = Direction.RIGHT
         self.load_frames()
-        self.collision_count: int = 0
 
     def load_frames(self):
         self.sprite_sheet: pg.surface.Surface = pg.image.load("../res/pacman.png").convert_alpha()
@@ -45,16 +38,16 @@ class PacMan(Game_Object):
         
         # move
         if keys[pg.K_UP] or keys[pg.K_w]:
-            self.direction = PacMan.UP
+            self.direction = Direction.UP
             self.add_coordinate(y= -self.speed*self.master.delta_time)
         elif keys[pg.K_DOWN] or keys[pg.K_s]:
-            self.direction = PacMan.DOWN
+            self.direction = Direction.DOWN
             self.add_coordinate(y= self.speed*self.master.delta_time)
         elif keys[pg.K_LEFT] or keys[pg.K_a]:
-            self.direction = PacMan.LEFT
+            self.direction = Direction.LEFT
             self.add_coordinate(x= -self.speed*self.master.delta_time)
         elif keys[pg.K_RIGHT] or keys[pg.K_d]:
-            self.direction = PacMan.RIGHT
+            self.direction = Direction.RIGHT
             self.add_coordinate(x= self.speed*self.master.delta_time)
 
         # check to wrap to around
@@ -68,34 +61,34 @@ class PacMan(Game_Object):
             self.set_coordinate(x= -GAME_OBJECT_WIDTH)
             
         # collision
-        for _, wall in self.master.maze.walls.values():
+        for wall in self.master.maze.walls.values():
             if not self.hit_box.colliderect(wall):
                 continue
             
-            self.collision_count += 1
-            if self.direction == PacMan.UP:
+            if self.direction == Direction.UP:
                 self.set_coordinate(y= wall.bottom)
-            elif self.direction == PacMan.DOWN:
+            elif self.direction == Direction.DOWN:
                 self.set_coordinate(y= wall.top - self.height)
-            elif self.direction == PacMan.LEFT:
+            elif self.direction == Direction.LEFT:
                 self.set_coordinate(x= wall.right)
-            elif self.direction == PacMan.RIGHT:
+            elif self.direction == Direction.RIGHT:
                 self.set_coordinate(x= wall.left - self.width)
                 
             break
+
         # update frames
         self.current_frame += (self.frame_rate * self.master.delta_time) 
         self.current_frame = self.current_frame if self.current_frame < len(self.frames) else 0
     
     def draw(self) -> None:
         image = self.frames[int(self.current_frame)]
-        if self.direction == PacMan.UP:
+        if self.direction == Direction.UP:
             image = pg.transform.rotate(surface= image, angle= 90)
-        elif self.direction == PacMan.DOWN:
+        elif self.direction == Direction.DOWN:
             image = pg.transform.rotate(surface= image, angle= -90)
-        elif self.direction == PacMan.LEFT:
+        elif self.direction == Direction.LEFT:
             image = pg.transform.rotate(surface= image, angle= 180)
-        elif self.direction == PacMan.RIGHT:
+        elif self.direction == Direction.RIGHT:
             image = image
         
         self.master.window.blit(image, self.rect)

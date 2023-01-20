@@ -13,7 +13,7 @@ from constants import FPS, SCREEN_HEIGHT, SCREEN_WIDTH
 class Game:
     
     def __init__(self) -> None:
-        self.window: pg.surface.Surface = pg.display.set_mode((SCREEN_WIDTH+3, SCREEN_HEIGHT+3), flags= pg.RESIZABLE) # + 2 so that the lower and most right walls can appear
+        self.window: pg.surface.Surface = pg.display.set_mode((SCREEN_WIDTH+3, SCREEN_HEIGHT+3), flags= pg.HWSURFACE | pg.DOUBLEBUF) # + 2 so that the lower and most right walls can appear
         pg.display.set_caption("Pac-Man")
         self.clock: pg.time.Clock = pg.time.Clock()
         self.fps: int = FPS
@@ -22,7 +22,7 @@ class Game:
         self._init()
         
     def _init(self) -> None:
-        self.pacman: PacMan = PacMan(self, x= 41, y= 41)
+        self.pacman: PacMan = PacMan(self, x= 45, y= 45)
         self.maze = Maze(self)
         
         self.restart()
@@ -40,7 +40,7 @@ class Game:
         self.maze.update()
     
     def draw(self) -> None:
-        self.window.fill("#e98a36")
+        self.window.fill("#000000")
         self.maze.draw()
         self.pacman.draw()
         
