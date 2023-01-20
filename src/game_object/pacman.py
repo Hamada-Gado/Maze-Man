@@ -16,23 +16,19 @@ from .game_object import Game_Object
 
 class PacMan(Game_Object):
     
-    speed: int = 100
-    
-    def __init__(self, master: Game, width: int = 32, height: int = 32, offset_x: int = 0, offset_y: int = 0, x: int = 0, y: int = 0) -> None:
-        super().__init__(master, width, height, offset_x, offset_y, x, y)
+    def __init__(self, master: Game, width: int = 25, height: int = 25, speed: int = 100, offset_x: int = 0, offset_y: int = 0, x: int = 0, y: int = 0) -> None:
+        super().__init__(master, width, height, speed, offset_x, offset_y, x, y)
  
-        # super().__init__(width= 32, height= 32, offset_x= 5, offset_y= 5, *args, **kwargs)
-
         self.current_frame: float = 0
         self.frame_rate: float = 20
-        self.direction: Direction = Direction.RIGHT
         self.load_frames()
 
     def load_frames(self):
         self.sprite_sheet: pg.surface.Surface = pg.image.load("../res/pacman.png").convert_alpha()
         self.frames: list[pg.surface.Surface] = []
         
-        for i in range(3):
+        # sprite sheet is 3 x 3 each frame is 25 x 25
+        for i in range(3): 
             for j in range(3):
                 self.frames.append(pg.Surface((self.width, self.height), pg.SRCALPHA))
                 self.frames[-1].blit(self.sprite_sheet, (0, 0), (j*self.width, i*self.height, self.width, self.height))
@@ -54,7 +50,7 @@ class PacMan(Game_Object):
         elif keys[pg.K_RIGHT] or keys[pg.K_d]:
             self.direction = Direction.RIGHT
             self.add_coordinate(x= self.speed*self.master.delta_time)
-
+     
         # check to wrap to around
         if self.coordinate.y < -self.height:
             self.set_coordinate(y= SCREEN_HEIGHT)
@@ -63,23 +59,10 @@ class PacMan(Game_Object):
         if self.coordinate.x < -self.width:
             self.set_coordinate(x= SCREEN_WIDTH)
         if self.coordinate.x > SCREEN_WIDTH:
-            self.set_coordinate(x= -self.width)
-            
-        # collision
-        for wall in self.master.maze.walls.values():
-            if not self.hit_box.colliderect(wall):
-                continue
-            
-            if self.direction == Direction.UP:
-                self.set_coordinate(y= wall.bottom)
-            elif self.direction == Direction.DOWN:
-                self.set_coordinate(y= wall.top - self.height)
-            elif self.direction == Direction.LEFT:
-                self.set_coordinate(x= wall.right)
-            elif self.direction == Direction.RIGHT:
-                self.set_coordinate(x= wall.left - self.width)
-                
-            break
+            self.set_coordinate(x= -self.width)        
+
+        # check for collision
+        self.check_collision()
 
         # update frames
         self.current_frame += (self.frame_rate * self.master.delta_time) 

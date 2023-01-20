@@ -11,29 +11,27 @@ pg.init()
 
 from abc import ABC, abstractmethod
 
-from constants import CELL_WIDTH, CELL_HEIGHT
+from constants import Direction, CELL_WIDTH, CELL_HEIGHT
 
 class Game_Object(ABC):
     
-    def __init__(self, master: Game, width: int = CELL_WIDTH, height: int = CELL_HEIGHT, offset_x: int = 0, offset_y: int = 0, x: int = 0, y: int = 0) -> None:
+    def __init__(self, master: Game, width: int = CELL_WIDTH, height: int = CELL_HEIGHT, speed: int = 0, offset_x: int = 0, offset_y: int = 0, x: int = 0, y: int = 0) -> None:
         
         self.master: Game  = master
-        self.offset_x: int = offset_x
-        self.offset_y: int = offset_y
-        
         self.width: int  = width
         self.height: int = height
+        self.speed: int = speed
+        
+        self.offset_x: int = offset_x
+        self.offset_y: int = offset_y
         
         self.coordinate: pg.Vector2  = pg.Vector2()
         self.rect: pg.Rect = pg.Rect(self.coordinate.x, self.coordinate.y, self.width, self.height)
         self.hit_box: pg.Rect = pg.Rect(self.coordinate.x, self.coordinate.y, self.width - self.offset_x, self.height - self.offset_y)
         
+        self.direction: Direction = Direction.RIGHT
+
         self.set_coordinate(x, y)
-        
-    @abstractmethod
-    def update(self) -> None: ...
-    @abstractmethod
-    def draw(self) -> None: ...
 
     def set_coordinate(self, x: float | int | None = None, y: float | int | None = None):
         self.coordinate.x = x if x is not None else self.coordinate.x
@@ -46,3 +44,26 @@ class Game_Object(ABC):
         self.coordinate.x += x
         self.coordinate.y += y
         self.set_coordinate()
+        
+    @abstractmethod
+    def update(self) -> None: ...
+  
+    @abstractmethod
+    def draw(self) -> None: ...
+    
+    def check_collision(self):
+        
+        for wall in self.master.maze.walls.values():
+            if not self.hit_box.colliderect(wall):
+                continue
+            
+            if self.direction == Direction.UP:
+                self.set_coordinate(y= wall.bottom)
+            elif self.direction == Direction.DOWN:
+                self.set_coordinate(y= wall.top - self.height)
+            elif self.direction == Direction.LEFT:
+                self.set_coordinate(x= wall.right)
+            elif self.direction == Direction.RIGHT:
+                self.set_coordinate(x= wall.left - self.width)
+                
+            break

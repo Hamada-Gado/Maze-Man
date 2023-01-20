@@ -7,7 +7,7 @@ from constants import Direction
 
 if TYPE_CHECKING:
     from game import Game
-    from maze import Maze, Maze_Node
+    from maze import Maze, Cell
 
 class Ai:
     
@@ -18,8 +18,8 @@ class Ai:
         
 class Ai_Node:
     
-    def __init__(self, state: Maze_Node, target: tuple[int, int], parent: Ai_Node | None, action: Direction) -> None:
-        self.state: Maze_Node = state
+    def __init__(self, state: Cell, target: tuple[int, int], parent: Ai_Node | None, action: Direction) -> None:
+        self.state: Cell = state
         self.target: tuple[int, int] = target
         self.parent: Ai_Node | None = parent
         self.steps: int = 0 if parent is None else (parent.steps + 1)
@@ -31,7 +31,7 @@ class Ai_Node:
     def heuristic(self) -> int:
         return abs(self.state.row - self.target[0]) + abs(self.state.col - self.target[1])
     
-    def evaluation(self) -> int: # evaluation function
+    def evaluation(self) -> int:
         return self.cost() + self.heuristic()
 
     def __lt__(self, other: Ai_Node) -> bool:
@@ -44,7 +44,7 @@ class A_Star:
         self.target: tuple[int, int] = target
         self.agent: tuple[int, int] = agent
     
-    def neighbors(self, state: Maze_Node) -> list[tuple[Direction, Maze_Node]]:
+    def neighbors(self, state: Cell) -> list[tuple[Direction, Cell]]:
         row, col = state.row, state.col
         candidates: list[tuple[Direction, tuple[int, int]]] = [
             (Direction.UP, (row-1, col)),
@@ -53,7 +53,7 @@ class A_Star:
             (Direction.RIGHT, (row, col+1))
         ]
 
-        result: list[tuple[Direction, Maze_Node]] = []
+        result: list[tuple[Direction, Cell]] = []
         for action, (r, c) in candidates:
             if 0 <= r < self.maze.rows and 0 <= c < self.maze.cols and action in self.maze.maze[r][c].connected:
                 result.append((action, self.maze.maze[r][c]))
@@ -78,7 +78,7 @@ class A_Star:
             
             if (node.state.row, node.state.col) == self.target:
                 actions: list[Direction] = []
-                cells: list[Maze_Node] = []
+                cells: list[Cell] = []
                 while node.parent is not None:
                     actions.append(node.action)
                     cells.append(node.state)
