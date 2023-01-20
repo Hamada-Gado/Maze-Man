@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 import pygame as pg
 
-from constants import Direction, GAME_OBJECT_WIDTH, GAME_OBJECT_HEIGHT, COLUMNS, ROWS
+from constants import Direction, CELL_WIDTH, CELL_HEIGHT, COLUMNS, ROWS
 
 pg.init()
 
@@ -15,7 +15,7 @@ import random
 from collections import deque
 
 
-class Maze_Node:
+class Cell:
     def __init__(self, row: int, col: int) -> None:
         self.row: int = row
         self.col: int = col
@@ -31,7 +31,7 @@ class Maze:
         self.master: Game = master
         self.cols: int = cols
         self.rows: int = rows
-        self.maze: list[list[Maze_Node]] = [[Maze_Node(row, col) for col in range(self.cols)] for row in range(self.rows)]
+        self.maze: list[list[Cell]] = [[Cell(row, col) for col in range(self.cols)] for row in range(self.rows)]
         
         self.create_random_maze()
         self.load_walls()
@@ -48,7 +48,7 @@ class Maze:
         
         while num_walls < (self.rows + 1) * self.cols:
             rectH: pg.rect.Rect = self.wallH.get_rect()
-            rectH.topleft = (c*GAME_OBJECT_WIDTH, r*GAME_OBJECT_HEIGHT)
+            rectH.topleft = (c*CELL_WIDTH, r*CELL_HEIGHT)
             self.walls[r, c, "H"] = rectH
             
             num_walls += 1
@@ -61,7 +61,7 @@ class Maze:
         r = c = num_walls = 0
         while num_walls < (self.cols + 1) * self.rows:
             rectV: pg.rect.Rect = self.wallV.get_rect()
-            rectV.topleft = (c*GAME_OBJECT_WIDTH, r*GAME_OBJECT_HEIGHT)
+            rectV.topleft = (c*CELL_WIDTH, r*CELL_HEIGHT)
             self.walls[r, c, "V"] = rectV
             
             num_walls += 1
@@ -82,8 +82,8 @@ class Maze:
                 if Direction.RIGHT in self.maze[r][c].connected:
                     self.walls.pop((r, c+1, "V"))
 
-    def get_neighbors(self, Maze_Node: Maze_Node) -> dict[Direction, Maze_Node]:
-        row, col = Maze_Node.row, Maze_Node.col
+    def get_neighbors(self, Cell: Cell) -> dict[Direction, Cell]:
+        row, col = Cell.row, Cell.col
         candidates: list[tuple[Direction, tuple[int, int]]] = [
             (Direction.UP, (row-1, col)),
             (Direction.DOWN, (row+1, col)),
@@ -91,7 +91,7 @@ class Maze:
             (Direction.RIGHT, (row, col+1))
         ]
         
-        result: dict[Direction, Maze_Node] = {}
+        result: dict[Direction, Cell] = {}
         for direction, (r, c) in candidates:
             if 0 <= r < self.rows and 0 <= c < self.cols and not self.maze[r][c].visited :
                 result[direction] = self.maze[r][c]
@@ -100,16 +100,16 @@ class Maze:
      
     def create_random_maze(self):
         
-        current_Maze_Node: Maze_Node = random.choice(random.choice(self.maze))
+        current_Maze_Node: Cell = random.choice(random.choice(self.maze))
         
-        visited: deque[Maze_Node] = deque()
+        visited: deque[Cell] = deque()
         visited.append(current_Maze_Node)
         
         num_visited = 1
         
         while num_visited < self.cols * self.rows: 
             current_Maze_Node.visited = True
-            neighbors: dict[Direction, Maze_Node] = self.get_neighbors(current_Maze_Node)
+            neighbors: dict[Direction, Cell] = self.get_neighbors(current_Maze_Node)
             
             if neighbors == {}:
                 current_Maze_Node = visited.pop()

@@ -1,10 +1,15 @@
-from typing import Any
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from game import Game
 
 import pygame as pg
 
 pg.init()
 
-from constants import Direction, GAME_OBJECT_HEIGHT, GAME_OBJECT_WIDTH, SCREEN_HEIGHT, SCREEN_WIDTH
+from constants import SCREEN_HEIGHT, SCREEN_WIDTH, Direction
 
 from .game_object import Game_Object
 
@@ -13,10 +18,10 @@ class PacMan(Game_Object):
     
     speed: int = 100
     
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
-        f"""{super().__doc__}"""
-        
-        super().__init__(width= 32, height= 32, offset_x= 5, offset_y= 5, *args, **kwargs)
+    def __init__(self, master: Game, width: int = 32, height: int = 32, offset_x: int = 0, offset_y: int = 0, x: int = 0, y: int = 0) -> None:
+        super().__init__(master, width, height, offset_x, offset_y, x, y)
+ 
+        # super().__init__(width= 32, height= 32, offset_x= 5, offset_y= 5, *args, **kwargs)
 
         self.current_frame: float = 0
         self.frame_rate: float = 20
@@ -51,14 +56,14 @@ class PacMan(Game_Object):
             self.add_coordinate(x= self.speed*self.master.delta_time)
 
         # check to wrap to around
-        if self.coordinate.y < -GAME_OBJECT_HEIGHT:
+        if self.coordinate.y < -self.height:
             self.set_coordinate(y= SCREEN_HEIGHT)
         if self.coordinate.y > SCREEN_HEIGHT:
-            self.set_coordinate(y= -GAME_OBJECT_HEIGHT)
-        if self.coordinate.x < -GAME_OBJECT_WIDTH:
+            self.set_coordinate(y= -self.height)
+        if self.coordinate.x < -self.width:
             self.set_coordinate(x= SCREEN_WIDTH)
         if self.coordinate.x > SCREEN_WIDTH:
-            self.set_coordinate(x= -GAME_OBJECT_WIDTH)
+            self.set_coordinate(x= -self.width)
             
         # collision
         for wall in self.master.maze.walls.values():

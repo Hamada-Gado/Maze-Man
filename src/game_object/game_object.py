@@ -11,19 +11,11 @@ pg.init()
 
 from abc import ABC, abstractmethod
 
-from constants import GAME_OBJECT_HEIGHT, GAME_OBJECT_WIDTH
-
+from constants import CELL_WIDTH, CELL_HEIGHT
 
 class Game_Object(ABC):
     
-    def __init__(self, master: Game, width: int = GAME_OBJECT_WIDTH, height: int = GAME_OBJECT_HEIGHT, offset_x: int = 0, offset_y: int = 0, x: int = 0, y: int = 0) -> None:
-        """
-        master : Game
-        offset_x : int = 0
-        offset_y : int = 0
-        x : int = 0
-        y : int = 0
-        """
+    def __init__(self, master: Game, width: int = CELL_WIDTH, height: int = CELL_HEIGHT, offset_x: int = 0, offset_y: int = 0, x: int = 0, y: int = 0) -> None:
         
         self.master: Game  = master
         self.offset_x: int = offset_x
