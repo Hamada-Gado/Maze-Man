@@ -18,12 +18,14 @@ pg.init()
 
 class Ghost(Game_Object, ABC):
     
-    def __init__(self, master: Game, width: int = 25, height: int = 0, speed: int = 50, offset_x: int = 0, offset_y: int = 0, x: int = 0, y: int = 0) -> None:
-        super().__init__(master, width, height, speed, offset_x, offset_y, x, y)
+    def __init__(self, master: Game, width: int = 25, height: int = 25, speed: int = 50, x: int = 0, y: int = 0) -> None:
+        super().__init__(master, width, height, speed, x, y)
         self.ai: Ai = Ai(self.master)
-         
+        
+        self.direction = Direction.NONE
+        
         self.current_frame: float = 0
-        self.frame_rate: float = 20
+        self.frame_rate: float = 8
         
     def load_frames(self, path: str):
         self.sprite_sheet: pg.surface.Surface = pg.image.load(path).convert_alpha()
@@ -45,23 +47,20 @@ class Ghost(Game_Object, ABC):
         
 class Red_Ghost(Ghost):
     
-    def __init__(self, master: Game, width: int = 25, height: int = 25, speed: int = 25, offset_x: int = 0, offset_y: int = 0, x: int = 0, y: int = 0) -> None:
-        super().__init__(master, width, height, speed, offset_x, offset_y, x, y)
+    def __init__(self, master: Game, width: int = 25, height: int = 25, speed: int = 50, x: int = 0, y: int = 0) -> None:
+        super().__init__(master, width, height, speed, x, y)
         self.load_frames("../res/red ghost.png")
         
     def update(self):
         # make a path to target if finished the last one
         if not self.ai.path:
             target = self.master.pacman.get_coordinate
-            print(target)
             target = int(target[1] / CELL_HEIGHT), int(target[0] / CELL_WIDTH)
             
             agent  = self.get_coordinate
             agent  = int(agent[1] / CELL_HEIGHT), int(agent[0] / CELL_WIDTH)
             
-            print(target, agent)
             self.ai.solve(target, agent)
-            print(self.ai.path)
             
         self.direction, next_cell = self.ai.path[0]
         
@@ -69,24 +68,24 @@ class Red_Ghost(Ghost):
         # change direction if reached next cell
         if self.direction == Direction.UP:
             self.add_coordinate(y= -self.speed*self.master.delta_time)
-            if self.hit_box.bottom > next_cell.row * CELL_HEIGHT:
+            if self.rect.bottom < next_cell.row * CELL_HEIGHT + CELL_HEIGHT:
                 self.ai.path.popleft()
         elif self.direction == Direction.DOWN:
             self.add_coordinate(y= self.speed*self.master.delta_time)
-            if self.hit_box.top < next_cell.row * CELL_HEIGHT:
+            if self.rect.top > next_cell.row * CELL_HEIGHT:
                 self.ai.path.popleft()
         elif self.direction == Direction.LEFT:
             self.add_coordinate(x= -self.speed*self.master.delta_time)
-            if self.hit_box.right < next_cell.col * CELL_WIDTH:
+            if self.rect.right < next_cell.col * CELL_WIDTH + CELL_WIDTH:
                 self.ai.path.popleft()
         elif self.direction == Direction.RIGHT:
             self.add_coordinate(x= self.speed*self.master.delta_time)
-            if self.hit_box.left > next_cell.col * CELL_WIDTH:
+            if self.rect.left > next_cell.col * CELL_WIDTH:
                 self.ai.path.popleft()
-                
-        self.check_collision()
         
-        #? update frames
-        
+        # update frames
+        self.current_frame += (self.frame_rate * self.master.delta_time) 
+        self.current_frame = self.current_frame if self.current_frame < len(self.frames[self.direction]) else 0
+    
     def draw(self) -> None:
         super().draw()

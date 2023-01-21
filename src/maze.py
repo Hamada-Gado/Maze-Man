@@ -20,10 +20,10 @@ class Cell:
         self.row: int = row
         self.col: int = col
         self.visited: bool = False
-        self.connected: list[Direction] = list()
+        self.connected: dict[Direction, Cell] = dict()
         
     def __repr__(self) -> str:
-        return f"|row, col: {(self.row, self.col)}, dir: {self.connected}|"
+        return f"|row, col: {(self.row, self.col)}"#, dir: {self.connected.keys()}|"
 
 class Maze:
     
@@ -73,13 +73,13 @@ class Maze:
             
         for r in range(self.rows):
             for c in range(self.cols):
-                if Direction.UP in self.maze[r][c].connected:
+                if Direction.UP in self.maze[r][c].connected.keys():
                     self.walls.pop((r, c, "H"))
-                if Direction.DOWN in self.maze[r][c].connected:
+                if Direction.DOWN in self.maze[r][c].connected.keys():
                     self.walls.pop((r+1, c, "H"))
-                if Direction.LEFT in self.maze[r][c].connected:
+                if Direction.LEFT in self.maze[r][c].connected.keys():
                     self.walls.pop((r, c, "V"))
-                if Direction.RIGHT in self.maze[r][c].connected:
+                if Direction.RIGHT in self.maze[r][c].connected.keys():
                     self.walls.pop((r, c+1, "V"))
 
     def get_neighbors(self, Cell: Cell) -> dict[Direction, Cell]:
@@ -116,7 +116,7 @@ class Maze:
                 continue
             
             direction: Direction = random.choice(list(neighbors.keys()))
-            current_Maze_Node.connected.append(direction)
+            current_Maze_Node.connected[direction] = neighbors[direction]
             current_Maze_Node = neighbors[direction]
 
             visited.append(current_Maze_Node)

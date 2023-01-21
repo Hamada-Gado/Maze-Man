@@ -24,8 +24,8 @@ class Game:
         
     def _init(self) -> None:
         self.maze = Maze(self)
-        self.pacman: PacMan = PacMan(self, x= 9*40 + 3, y= 10*40 + 3)
-        self.red_ghost: Red_Ghost = Red_Ghost(self, x= 45, y= 45)
+        self.pacman: PacMan = PacMan(self, x= 4*40 + 3, y= 0*40 + 3)
+        self.red_ghost: Red_Ghost = Red_Ghost(self, x= 50, y= 50)
         
         self.restart()
         

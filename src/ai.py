@@ -21,7 +21,6 @@ class Ai:
         self.a_star.target = target
         self.a_star.agent = agent
         self.path = self.a_star.solve()
-        return self.path
         
 class Ai_Node:
     
@@ -62,7 +61,7 @@ class A_Star:
 
         result: list[tuple[Direction, Cell]] = []
         for action, (r, c) in candidates:
-            if 0 <= r < self.maze.rows and 0 <= c < self.maze.cols and (action in self.maze.maze[r][c].connected or action in self.maze.maze[row][col].connected):
+            if 0 <= r < self.maze.rows and 0 <= c < self.maze.cols and (state in self.maze.maze[r][c].connected.values() or action in self.maze.maze[row][col].connected.keys()):
                 result.append((action, self.maze.maze[r][c]))
         return result
     
@@ -98,9 +97,3 @@ class A_Star:
                 if state not in explored:
                     child = Ai_Node(state= state, target= self.target, parent= node, action= action)
                     frontier.put(child)
-                    
-         
-if __name__ == "__main__":           
-    m = Maze(None, 15, 15)
-    ai = Ai(type("m", (), {"maze": m}))
-    print(ai.solve((11, 0), (6, 3)))

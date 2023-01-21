@@ -16,11 +16,13 @@ from .game_object import Game_Object
 
 class PacMan(Game_Object):
     
-    def __init__(self, master: Game, width: int = 25, height: int = 25, speed: int = 100, offset_x: int = 0, offset_y: int = 0, x: int = 0, y: int = 0) -> None:
-        super().__init__(master, width, height, speed, offset_x, offset_y, x, y)
+    def __init__(self, master: Game, width: int = 25, height: int = 25, speed: int = 100, x: int = 0, y: int = 0) -> None:
+        super().__init__(master, width, height, speed, x, y)
  
+        self.direction = Direction.RIGHT
+
         self.current_frame: float = 0
-        self.frame_rate: float = 20
+        self.frame_rate: float = 24
         self.load_frames()
 
     def load_frames(self):
@@ -70,8 +72,21 @@ class PacMan(Game_Object):
         if self.coordinate.x > SCREEN_WIDTH:
             self.set_coordinate(x= -self.width)        
 
-        # check for collision
-        self.check_collision()
+        # check for collision     
+        for wall in self.master.maze.walls.values():
+            if not self.rect.colliderect(wall):
+                continue
+            
+            if self.direction == Direction.UP:
+                self.set_coordinate(y= wall.bottom)
+            elif self.direction == Direction.DOWN:
+                self.set_coordinate(y= wall.top - self.height)
+            elif self.direction == Direction.LEFT:
+                self.set_coordinate(x= wall.right)
+            elif self.direction == Direction.RIGHT:
+                self.set_coordinate(x= wall.left - self.width)
+                
+            break
 
         # update frames
         self.current_frame += (self.frame_rate * self.master.delta_time) 
