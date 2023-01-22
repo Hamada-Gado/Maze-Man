@@ -23,7 +23,7 @@ class Cell:
         self.connected: dict[Direction, Cell] = dict()
         
     def __repr__(self) -> str:
-        return f"|row, col: {(self.row, self.col)}"#, dir: {self.connected.keys()}|"
+        return f"|row, col: {(self.row, self.col)} dir: {self.connected.keys()}|"
 
 class Maze:
     

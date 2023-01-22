@@ -8,7 +8,7 @@ from constants import Direction
 
 if TYPE_CHECKING:
     from game import Game
-from maze import Maze, Cell
+    from maze import Maze, Cell
 
 class Ai:
     

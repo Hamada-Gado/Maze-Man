@@ -1,20 +1,20 @@
 import sys
 
 import pygame as pg
-from game_object.ghost import Red_Ghost
 
+from game_object.ghost import Red_Ghost
 from game_object.pacman import PacMan
 from maze import Maze
 
 pg.init()
 
-from constants import FPS, SCREEN_HEIGHT, SCREEN_WIDTH
+from constants import CELL_HEIGHT, CELL_WIDTH, FPS, SCREEN_HEIGHT, SCREEN_WIDTH, WALLS_OFFSET
 
 
 class Game:
     
     def __init__(self) -> None:
-        self.window: pg.surface.Surface = pg.display.set_mode((SCREEN_WIDTH+3, SCREEN_HEIGHT+3), flags= pg.HWSURFACE | pg.DOUBLEBUF) # + 2 so that the lower and most right walls can appear
+        self.window: pg.surface.Surface = pg.display.set_mode((SCREEN_WIDTH + WALLS_OFFSET, SCREEN_HEIGHT + WALLS_OFFSET), flags= pg.HWSURFACE | pg.DOUBLEBUF) # + walls offset so that the lower and most right walls can appear
         pg.display.set_caption("Pac-Man")
         self.clock: pg.time.Clock = pg.time.Clock()
         self.fps: int = FPS
@@ -24,8 +24,8 @@ class Game:
         
     def _init(self) -> None:
         self.maze = Maze(self)
-        self.pacman: PacMan = PacMan(self, x= 4*40 + 3, y= 0*40 + 3)
-        self.red_ghost: Red_Ghost = Red_Ghost(self, x= 50, y= 50)
+        self.pacman: PacMan = PacMan(self, x= 4*CELL_WIDTH + WALLS_OFFSET, y= WALLS_OFFSET)
+        self.red_ghost: Red_Ghost = Red_Ghost(self, x= CELL_WIDTH + WALLS_OFFSET, y= CELL_HEIGHT + WALLS_OFFSET)
         
         self.restart()
         
