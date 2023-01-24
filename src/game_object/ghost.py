@@ -68,19 +68,19 @@ class Red_Ghost(Ghost):
         # change direction if reached next cell
         if self.direction == Direction.UP:
             self.add_coordinate(y= -self.speed*self.master.delta_time)
-            if self.rect.bottom < next_cell.row * CELL_HEIGHT + CELL_HEIGHT:
+            if self.rect.centery == next_cell.row * CELL_HEIGHT + CELL_HEIGHT//2:
                 self.ai.path.popleft()
         elif self.direction == Direction.DOWN:
             self.add_coordinate(y= self.speed*self.master.delta_time)
-            if self.rect.top > next_cell.row * CELL_HEIGHT:
+            if self.rect.centery == next_cell.row * CELL_HEIGHT + CELL_HEIGHT//2:
                 self.ai.path.popleft()
         elif self.direction == Direction.LEFT:
             self.add_coordinate(x= -self.speed*self.master.delta_time)
-            if self.rect.right < next_cell.col * CELL_WIDTH + CELL_WIDTH:
+            if self.rect.centerx == next_cell.col * CELL_WIDTH + CELL_WIDTH//2:
                 self.ai.path.popleft()
         elif self.direction == Direction.RIGHT:
             self.add_coordinate(x= self.speed*self.master.delta_time)
-            if self.rect.left > next_cell.col * CELL_WIDTH:
+            if self.rect.centerx == next_cell.col * CELL_WIDTH + CELL_WIDTH//2:
                 self.ai.path.popleft()
         
         # update frames

@@ -49,3 +49,6 @@ class Game_Object(ABC):
   
     @abstractmethod
     def draw(self) -> None: ...
+
+    @abstractmethod
+    def load_frames(self) -> None: ...
