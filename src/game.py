@@ -5,6 +5,7 @@ import pygame as pg
 from game_object.ghost import Red_Ghost
 from game_object.pacman import PacMan
 from maze import Maze
+from game_object.pellet import Pellet
 
 pg.init()
 
@@ -25,8 +26,10 @@ class Game:
     def _init(self) -> None:
         self.maze = Maze(self)
         self.pacman: PacMan = PacMan(self, x= 4*CELL_WIDTH + WALLS_OFFSET, y= WALLS_OFFSET)
+        self.pellets: type[Pellet] = Pellet
+        self.pellets.create_pellets(self)
         self.red_ghost: Red_Ghost = Red_Ghost(self, x= CELL_WIDTH + WALLS_OFFSET, y= CELL_HEIGHT + WALLS_OFFSET)
-        
+
         self.restart()
         
     def restart(self) -> None:
@@ -40,10 +43,12 @@ class Game:
     def update(self) -> None:
         self.pacman.update()
         self.red_ghost.update()
+        self.pellets.update()
         
     def draw(self) -> None:
         self.window.fill("#000000")
         self.maze.draw()
+        self.pellets.draw()
         self.pacman.draw()
         self.red_ghost.draw()
         
