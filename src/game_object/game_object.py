@@ -2,8 +2,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+
 if TYPE_CHECKING:
-    from game import Game
+    from states.play_state import Play_State
 
 import pygame as pg
 
@@ -15,9 +16,10 @@ from constants import Direction, CELL_WIDTH, CELL_HEIGHT
 
 class Game_Object(ABC):
     
-    def __init__(self, master: Game, width: int = CELL_WIDTH, height: int = CELL_HEIGHT, speed: int = 0, x: int = 0, y: int = 0) -> None:
+    def __init__(self, master: Play_State, width: int = CELL_WIDTH, height: int = CELL_HEIGHT, speed: int = 0, x: int = 0, y: int = 0) -> None:
         
-        self.master: Game  = master
+        self.master: Play_State = master
+        
         self.width: int  = width
         self.height: int = height
         self.speed: int = speed

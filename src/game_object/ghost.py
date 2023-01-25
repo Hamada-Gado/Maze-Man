@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 from constants import CELL_HEIGHT, CELL_WIDTH, Direction
 
 if TYPE_CHECKING:
-    from game import Game
+    from states.play_state import Play_State
 
 import pygame as pg
 
@@ -18,7 +18,7 @@ pg.init()
 
 class Ghost(Game_Object, ABC):
     
-    def __init__(self, master: Game, width: int = 25, height: int = 25, speed: int = 50, x: int = 0, y: int = 0) -> None:
+    def __init__(self, master: Play_State, width: int = 25, height: int = 25, speed: int = 50, x: int = 0, y: int = 0) -> None:
         super().__init__(master, width, height, speed, x, y)
         self.ai: Ai = Ai(self.master)
         
@@ -42,12 +42,12 @@ class Ghost(Game_Object, ABC):
     def update(self) -> None: ...
                
     def draw(self) -> None:
-        self.master.window.blit(self.frames[self.direction][int(self.current_frame)], self.rect)
+        self.master.game.window.blit(self.frames[self.direction][int(self.current_frame)], self.rect)
 
         
 class Red_Ghost(Ghost):
     
-    def __init__(self, master: Game, width: int = 25, height: int = 25, speed: int = 50, x: int = 0, y: int = 0) -> None:
+    def __init__(self, master: Play_State, width: int = 25, height: int = 25, speed: int = 50, x: int = 0, y: int = 0) -> None:
         super().__init__(master, width, height, speed, x, y)
         self.load_frames("../res/red ghost.png")
         
@@ -67,24 +67,40 @@ class Red_Ghost(Ghost):
         # move
         # change direction if reached next cell
         if self.direction == Direction.UP:
-            self.add_coordinate(y= -self.speed*self.master.delta_time)
-            if self.rect.centery == next_cell.row * CELL_HEIGHT + CELL_HEIGHT//2:
+            self.add_coordinate(y= -self.speed*self.master.game.delta_time)
+            if self.rect.centery < next_cell.row * CELL_HEIGHT + CELL_HEIGHT//2:
                 self.ai.path.popleft()
         elif self.direction == Direction.DOWN:
-            self.add_coordinate(y= self.speed*self.master.delta_time)
-            if self.rect.centery == next_cell.row * CELL_HEIGHT + CELL_HEIGHT//2:
+            self.add_coordinate(y= self.speed*self.master.game.delta_time)
+            if self.rect.centery > next_cell.row * CELL_HEIGHT + CELL_HEIGHT//2:
                 self.ai.path.popleft()
         elif self.direction == Direction.LEFT:
-            self.add_coordinate(x= -self.speed*self.master.delta_time)
-            if self.rect.centerx == next_cell.col * CELL_WIDTH + CELL_WIDTH//2:
+            self.add_coordinate(x= -self.speed*self.master.game.delta_time)
+            if self.rect.centerx < next_cell.col * CELL_WIDTH + CELL_WIDTH//2:
                 self.ai.path.popleft()
         elif self.direction == Direction.RIGHT:
-            self.add_coordinate(x= self.speed*self.master.delta_time)
-            if self.rect.centerx == next_cell.col * CELL_WIDTH + CELL_WIDTH//2:
+            self.add_coordinate(x= self.speed*self.master.game.delta_time)
+            if self.rect.centerx > next_cell.col * CELL_WIDTH + CELL_WIDTH//2:
                 self.ai.path.popleft()
         
+        # check for collision     
+        for wall in self.master.maze.walls.values():
+            if not self.rect.colliderect(wall):
+                continue
+            
+            if self.direction == Direction.UP:
+                self.set_coordinate(y= wall.bottom)
+            elif self.direction == Direction.DOWN:
+                self.set_coordinate(y= wall.top - self.height)
+            elif self.direction == Direction.LEFT:
+                self.set_coordinate(x= wall.right)
+            elif self.direction == Direction.RIGHT:
+                self.set_coordinate(x= wall.left - self.width)
+                
+            break
+        
         # update frames
-        self.current_frame += (self.frame_rate * self.master.delta_time) 
+        self.current_frame += (self.frame_rate * self.master.game.delta_time) 
         self.current_frame = self.current_frame if self.current_frame < len(self.frames[self.direction]) else 0
     
     def draw(self) -> None:

@@ -2,8 +2,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+
 if TYPE_CHECKING:
-    from game import Game
+    from states.play_state import Play_State
 
 import pygame as pg
 
@@ -16,7 +17,7 @@ from .game_object import Game_Object
 
 class PacMan(Game_Object):
     
-    def __init__(self, master: Game, width: int = 25, height: int = 25, speed: int = 100, x: int = 0, y: int = 0) -> None:
+    def __init__(self, master: Play_State, width: int = 25, height: int = 25, speed: int = 100, x: int = 0, y: int = 0) -> None:
         super().__init__(master, width, height, speed, x, y)
  
         self.direction = Direction.RIGHT
@@ -51,16 +52,16 @@ class PacMan(Game_Object):
         # move
         if keys[pg.K_UP] or keys[pg.K_w]:
             self.direction = Direction.UP
-            self.add_coordinate(y= -self.speed*self.master.delta_time)
+            self.add_coordinate(y= -self.speed*self.master.game.delta_time)
         elif keys[pg.K_DOWN] or keys[pg.K_s]:
             self.direction = Direction.DOWN
-            self.add_coordinate(y= self.speed*self.master.delta_time)
+            self.add_coordinate(y= self.speed*self.master.game.delta_time)
         elif keys[pg.K_LEFT] or keys[pg.K_a]:
             self.direction = Direction.LEFT
-            self.add_coordinate(x= -self.speed*self.master.delta_time)
+            self.add_coordinate(x= -self.speed*self.master.game.delta_time)
         elif keys[pg.K_RIGHT] or keys[pg.K_d]:
             self.direction = Direction.RIGHT
-            self.add_coordinate(x= self.speed*self.master.delta_time)
+            self.add_coordinate(x= self.speed*self.master.game.delta_time)
      
         # check to wrap to around
         if self.coordinate.y < -self.height:
@@ -89,8 +90,8 @@ class PacMan(Game_Object):
             break
 
         # update frames
-        self.current_frame += (self.frame_rate * self.master.delta_time) 
+        self.current_frame += (self.frame_rate * self.master.game.delta_time) 
         self.current_frame = self.current_frame if self.current_frame < len(self.frames[self.direction]) else 0
     
     def draw(self) -> None:
-        self.master.window.blit(self.frames[self.direction][int(self.current_frame)], self.rect)
+        self.master.game.window.blit(self.frames[self.direction][int(self.current_frame)], self.rect)

@@ -9,7 +9,7 @@ from constants import Direction, CELL_WIDTH, CELL_HEIGHT, COLUMNS, ROWS
 pg.init()
 
 if TYPE_CHECKING:
-    from game import Game
+    from states.play_state import Play_State
 
 import random
 from collections import deque
@@ -27,8 +27,8 @@ class Cell:
 
 class Maze:
     
-    def __init__(self, master: Game, cols: int = COLUMNS, rows: int = ROWS) -> None:
-        self.master: Game = master
+    def __init__(self, master: Play_State, cols: int = COLUMNS, rows: int = ROWS) -> None:
+        self.master: Play_State = master
         self.cols: int = cols
         self.rows: int = rows
         self.maze: list[list[Cell]] = [[Cell(row, col) for col in range(self.cols)] for row in range(self.rows)]
@@ -131,8 +131,8 @@ class Maze:
         # draw walls
         for (_, _, orientation), rect in self.walls.items():
             if orientation == "H":
-                self.master.window.blit(self.wallH, rect)
+                self.master.game.window.blit(self.wallH, rect)
             else:
-                self.master.window.blit(self.wallV, rect)
+                self.master.game.window.blit(self.wallV, rect)
 
     

@@ -16,3 +16,7 @@ class Direction(Enum):
     DOWN = auto()
     RIGHT = auto()
     LEFT = auto()
+
+class State(Enum):
+    
+    PLAY_STATE = auto()

@@ -5,8 +5,8 @@ from typing import TYPE_CHECKING
 from constants import CELL_HEIGHT, CELL_WIDTH, WALLS_OFFSET
 
 if TYPE_CHECKING:
-    from game import Game
-
+    from states.play_state import Play_State
+    
 import pygame as pg
 
 from .game_object import Game_Object
@@ -15,7 +15,7 @@ pg.init()
 
 class Pellet(Game_Object):
     pellets: list[Pellet] = list()
-    master: Game
+    master: Play_State
     
     def __init__(self, row: int, col: int, width: int = 16, height: int = 16) -> None:       
         self.rect: pg.Rect = pg.Rect(0, 0, width, height)
@@ -34,10 +34,10 @@ class Pellet(Game_Object):
     @classmethod
     def draw(cls) -> None:
         for pellet in cls.pellets:
-            cls.master.window.blit(pellet.frame, pellet.rect)
+            cls.master.game.window.blit(pellet.frame, pellet.rect)
         
     @classmethod
-    def create_pellets(cls, master: Game) -> None:
+    def create_pellets(cls, master: Play_State) -> None:
         cls.master = master
         
         for r in range(cls.master.maze.rows):

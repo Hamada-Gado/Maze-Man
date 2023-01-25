@@ -7,13 +7,13 @@ from typing import TYPE_CHECKING
 from constants import Direction
 
 if TYPE_CHECKING:
-    from game import Game
+    from states.play_state import Play_State
     from maze import Maze, Cell
 
 class Ai:
     
-    def __init__(self, master: Game) -> None:
-        self.master: Game = master
+    def __init__(self, master: Play_State) -> None:
+        self.master: Play_State = master
         self.path: deque[tuple[Direction, Cell]] = deque()
         self.a_star: A_Star = A_Star(self.master.maze, tuple(), tuple())
         
