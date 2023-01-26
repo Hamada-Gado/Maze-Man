@@ -12,6 +12,7 @@ from game_object.pellet import Pellet
 from maze import Maze
 
 from .base_state import Base_State
+import pygame as pg
 
 
 class Play_State(Base_State):
@@ -44,3 +45,6 @@ class Play_State(Base_State):
     
     def exit(self) -> None:
         return super().exit()
+
+    def event_handler(self, event: pg.event.Event) -> None:
+        return super().event_handler(event)

@@ -20,3 +20,4 @@ class Direction(Enum):
 class State(Enum):
     
     PLAY_STATE = auto()
+    START_STATE = auto()

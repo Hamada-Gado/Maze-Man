@@ -6,6 +6,7 @@ if TYPE_CHECKING:
     from game import Game
 
 from abc import ABC, abstractmethod
+import pygame as pg
 
 
 class Base_State(ABC):
@@ -14,10 +15,12 @@ class Base_State(ABC):
         self.game: Game = game
     
     @abstractmethod
-    def enter(self) -> None: pass
-    @abstractmethod
-    def exit(self) -> None: pass
-    @abstractmethod
     def update(self) -> None: pass
     @abstractmethod
     def draw(self) -> None: pass
+    @abstractmethod
+    def event_handler(self, event: pg.event.Event) -> None: pass
+    @abstractmethod
+    def enter(self) -> None: pass
+    @abstractmethod
+    def exit(self) -> None: pass

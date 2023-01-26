@@ -6,6 +6,7 @@ from constants import State
 from state_machine import State_Machine
 from states.base_state import Base_State
 from states.play_state import Play_State
+from states.start_state import Start_State
 
 pg.init()
 
@@ -24,10 +25,11 @@ class Game:
         self.delta_time: float = 0
         
         self.states: dict[State, type[Base_State]] = {
-            State.PLAY_STATE: Play_State
+            State.PLAY_STATE: Play_State,
+            State.START_STATE: Start_State
         }
         self.state_machine: State_Machine = State_Machine(self, self.states)
-        self.state_machine.change(State.PLAY_STATE)
+        self.state_machine.change(State.START_STATE)
         
     
     def terminate(self) -> None:
@@ -45,12 +47,13 @@ class Game:
     def run(self) -> None:
         
         while True:
-            self.delta_time = self.clock.get_time()/1000
             
             for event in pg.event.get():
                 if event.type == pg.QUIT or (event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE):
                     self.terminate()
+                    
+                self.state_machine.event_handler(event)
               
             self.update()
             self.draw()
-            self.clock.tick(self.fps)
+            self.delta_time = self.clock.tick(self.fps)/1000
