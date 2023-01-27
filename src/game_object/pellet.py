@@ -23,7 +23,7 @@ class Pellet(Game_Object):
         self.load_frames()
         
     def load_frames(self) -> None:
-        self.frame: pg.surface.Surface = pg.transform.scale(pg.image.load("../res/pellet.png"), size= (5, 5)).convert_alpha()
+        self.frame: pg.surface.Surface = pg.transform.scale(pg.image.load("../res/images/pellet.png"), size= (5, 5)).convert_alpha()
     
     @classmethod  
     def update(cls) -> None:

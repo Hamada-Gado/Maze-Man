@@ -27,7 +27,7 @@ class PacMan(Game_Object):
         self.load_frames()
 
     def load_frames(self):
-        self.sprite_sheet: pg.surface.Surface = pg.image.load("../res/pacman.png").convert_alpha()
+        self.sprite_sheet: pg.surface.Surface = pg.image.load("../res/images/pacman.png").convert_alpha()
         self.frames: dict[Direction, list[pg.surface.Surface]] = dict()
         self.frames[Direction.RIGHT] = list()
 

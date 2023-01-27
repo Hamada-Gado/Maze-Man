@@ -38,7 +38,7 @@ class Maze:
         self.create_walls()
         
     def load_walls(self):
-        self.wallV: pg.surface.Surface = pg.image.load("../res/wall.png").convert_alpha()
+        self.wallV: pg.surface.Surface = pg.image.load("../res/images/wall.png").convert_alpha()
         self.wallH: pg.surface.Surface = pg.transform.rotate(surface= self.wallV, angle= 90).convert_alpha()
         
     def create_walls(self):

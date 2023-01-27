@@ -49,7 +49,7 @@ class Red_Ghost(Ghost):
     
     def __init__(self, master: Play_State, width: int = 25, height: int = 25, speed: int = 50, x: int = 0, y: int = 0) -> None:
         super().__init__(master, width, height, speed, x, y)
-        self.load_frames("../res/red ghost.png")
+        self.load_frames("../res/images/red ghost.png")
         
     def update(self):
         # make a path to target if finished the last one

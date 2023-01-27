@@ -35,6 +35,7 @@ class Play_State(Base_State):
         self.pellet.update()
        
     def draw(self) -> None:
+        self.game.window.fill("#000000")
         self.maze.draw()
         self.pellet.draw()
         self.pacman.draw()

@@ -10,8 +10,7 @@ from states.start_state import Start_State
 
 pg.init()
 
-from constants import (CELL_HEIGHT, CELL_WIDTH, FPS, SCREEN_HEIGHT,
-                       SCREEN_WIDTH, WALLS_OFFSET)
+from constants import FPS, SCREEN_HEIGHT, SCREEN_WIDTH, WALLS_OFFSET
 
 
 class Game:
@@ -40,7 +39,6 @@ class Game:
         self.state_machine.update()
        
     def draw(self) -> None:
-        self.window.fill("#000000")
         self.state_machine.draw()        
         pg.display.flip()
      
