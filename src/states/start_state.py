@@ -20,28 +20,30 @@ class Start_State(Base_State):
         
         self.manager: pgg.UIManager = pgg.UIManager((SCREEN_WIDTH, SCREEN_HEIGHT), "../res/themes/theme.json", enable_live_theme_updates= True)
 
-        self.title_label = pgg.elements.UILabel(
+        # title label
+        pgg.elements.UILabel(
             relative_rect= pg.Rect((0, 10), (-1, -1)),
             text= "PAC-MAN", manager= self.manager,
             object_id= "title_label",
+            anchors= {
+                'centerx': 'centerx',
+                'top': 'top',
+            } 
         )
-        self.title_label.anchors = {
-            'centerx': 'centerx',
-            'top': 'top',
-        }
-        self.title_label.update_containing_rect_position()
         
         self.play_button: pgg.elements.UIButton = pgg.elements.UIButton(
-            relative_rect= pg.Rect((0, 0), (100, 54)),
+            relative_rect= pg.Rect((0, 0), (-1, -1)),
             text= "PLAY", manager= self.manager,
+            object_id= "title_label",
             anchors= {
                 'center': 'center'
             }
         )
         
         self.quit_button : pgg.elements.UIButton = pgg.elements.UIButton(
-            relative_rect= pg.Rect((0, 54), (100, 54)),
+            relative_rect= pg.Rect((0, self.play_button.relative_rect.height), (-1, -1)),
             text= "QUIT", manager= self.manager,
+            object_id= "title_label",
             anchors= {
                 'center': 'center',
                 'top_target': self.play_button
