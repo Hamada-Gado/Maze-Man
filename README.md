@@ -1,1 +1,1 @@
-# Pac-Man
+# Maze-Man

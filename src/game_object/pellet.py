@@ -28,7 +28,7 @@ class Pellet(Game_Object):
     @classmethod  
     def update(cls) -> None:
         for i, pellet in enumerate(cls.pellets[:]):
-            if pellet.rect.colliderect(cls.master.pacman.rect):
+            if pellet.rect.colliderect(cls.master.maze_man.rect):
                 cls.pellets.remove(pellet)
     
     @classmethod

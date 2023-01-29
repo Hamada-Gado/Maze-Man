@@ -54,7 +54,7 @@ class Red_Ghost(Ghost):
     def update(self):
         # make a path to target if finished the last one
         if not self.ai.path:
-            target = self.master.pacman.get_coordinate
+            target = self.master.maze_man.get_coordinate
             target = int(target[1] / CELL_HEIGHT), int(target[0] / CELL_WIDTH)
             
             agent  = self.get_coordinate

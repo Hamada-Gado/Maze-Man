@@ -15,7 +15,7 @@ from constants import SCREEN_HEIGHT, SCREEN_WIDTH, Direction
 from .game_object import Game_Object
 
 
-class PacMan(Game_Object):
+class Maze_Man(Game_Object):
     
     def __init__(self, master: Play_State, width: int = 25, height: int = 25, speed: int = 100, x: int = 0, y: int = 0) -> None:
         super().__init__(master, width, height, speed, x, y)
@@ -27,7 +27,7 @@ class PacMan(Game_Object):
         self.load_frames()
 
     def load_frames(self):
-        self.sprite_sheet: pg.surface.Surface = pg.image.load("../res/images/pacman.png").convert_alpha()
+        self.sprite_sheet: pg.surface.Surface = pg.image.load("../res/images/Maze Man.png").convert_alpha()
         self.frames: dict[Direction, list[pg.surface.Surface]] = dict()
         self.frames[Direction.RIGHT] = list()
 

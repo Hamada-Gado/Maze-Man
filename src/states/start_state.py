@@ -23,7 +23,7 @@ class Start_State(Base_State):
         # title label
         pgg.elements.UILabel(
             relative_rect= pg.Rect((0, 10), (-1, -1)),
-            text= "PAC-MAN", manager= self.manager,
+            text= "MAZE-MAN", manager= self.manager,
             object_id= "title_label",
             anchors= {
                 'centerx': 'centerx',
@@ -34,7 +34,7 @@ class Start_State(Base_State):
         self.play_button: pgg.elements.UIButton = pgg.elements.UIButton(
             relative_rect= pg.Rect((0, 0), (-1, -1)),
             text= "PLAY", manager= self.manager,
-            object_id= "title_label",
+            object_id= "button",
             anchors= {
                 'center': 'center'
             }
@@ -43,7 +43,7 @@ class Start_State(Base_State):
         self.quit_button : pgg.elements.UIButton = pgg.elements.UIButton(
             relative_rect= pg.Rect((0, self.play_button.relative_rect.height), (-1, -1)),
             text= "QUIT", manager= self.manager,
-            object_id= "title_label",
+            object_id= "button",
             anchors= {
                 'center': 'center',
                 'top_target': self.play_button
