@@ -16,6 +16,7 @@ pg.init()
 class Pellet(Game_Object):
     pellets: list[Pellet] = list()
     master: Play_State
+    eaten: int = 0
     
     def __init__(self, row: int, col: int, width: int = 16, height: int = 16) -> None:       
         self.rect: pg.Rect = pg.Rect(0, 0, width, height)
@@ -27,8 +28,9 @@ class Pellet(Game_Object):
     
     @classmethod  
     def update(cls) -> None:
-        for i, pellet in enumerate(cls.pellets[:]):
+        for pellet in cls.pellets[:]:
             if pellet.rect.colliderect(cls.master.maze_man.rect):
+                cls.eaten += 1
                 cls.pellets.remove(pellet)
     
     @classmethod

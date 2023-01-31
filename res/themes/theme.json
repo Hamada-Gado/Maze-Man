@@ -32,7 +32,7 @@
         
         "font": {
             "name": "FiraCode",
-            "size": "45",
+            "size": "35",
             "bold": "0",
             "italic": "0",
             "regular_path": "../res/fonts/FiraCode-Regular.ttf"

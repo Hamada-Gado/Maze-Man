@@ -21,3 +21,4 @@ class State(Enum):
     
     PLAY_STATE = auto()
     START_STATE = auto()
+    SCORE_STATE = auto()

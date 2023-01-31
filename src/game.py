@@ -5,8 +5,9 @@ import pygame as pg
 from constants import State
 from state_machine import State_Machine
 from states.base_state import Base_State
-from states.play_state import Play_State
 from states.start_state import Start_State
+from states.play_state import Play_State
+from states.score_state import Score_State
 
 pg.init()
 
@@ -25,7 +26,8 @@ class Game:
         
         self.states: dict[State, type[Base_State]] = {
             State.PLAY_STATE: Play_State,
-            State.START_STATE: Start_State
+            State.START_STATE: Start_State,
+            State.SCORE_STATE: Score_State
         }
         self.state_machine: State_Machine = State_Machine(self, self.states)
         self.state_machine.change(State.START_STATE)

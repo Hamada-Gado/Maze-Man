@@ -122,10 +122,7 @@ class Maze:
             visited.append(current_Maze_Node)
             num_visited += 1
         
-        current_Maze_Node.visited = True
-     
-    def update(self):
-        pass
+        current_Maze_Node.visited = True 
     
     def draw(self): 
         # draw walls

@@ -31,7 +31,7 @@ class Play_State(Base_State):
     def update(self) -> None:
 
         if self.maze_man.rect.colliderect(self.red_ghost.rect) or len(self.pellet.pellets) == 0:
-            self.game.state_machine.change(State.START_STATE)
+            self.game.state_machine.change(State.SCORE_STATE, self.pellet.eaten)
         
         self.maze_man.update()
         self.red_ghost.update()
