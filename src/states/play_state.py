@@ -9,7 +9,7 @@ if TYPE_CHECKING:
 
 import pygame as pg
 
-from constants import CELL_HEIGHT, CELL_WIDTH, WALLS_OFFSET
+from constants import COLUMNS, ROWS, CELL_HEIGHT, CELL_WIDTH, WALLS_OFFSET
 from game_object.ghost import Red_Ghost
 from game_object.maze_man import Maze_Man 
 from game_object.pellet import Pellet
@@ -23,10 +23,10 @@ class Play_State(Base_State):
     def __init__(self, game: Game) -> None:
         super().__init__(game)
         self.maze = Maze(self)
-        self.maze_man: Maze_Man = Maze_Man(self, x= 4*CELL_WIDTH + WALLS_OFFSET, y= WALLS_OFFSET)
+        self.maze_man: Maze_Man = Maze_Man(self, x= WALLS_OFFSET, y= WALLS_OFFSET)
         self.pellet: type[Pellet] = Pellet
         self.pellet.create_pellets(self)
-        self.red_ghost: Red_Ghost = Red_Ghost(self, x= CELL_WIDTH + WALLS_OFFSET, y= CELL_HEIGHT + WALLS_OFFSET)
+        self.red_ghost: Red_Ghost = Red_Ghost(self, x= (COLUMNS-1) * CELL_WIDTH + WALLS_OFFSET, y= (ROWS-1) * CELL_HEIGHT + WALLS_OFFSET)
 
     def update(self) -> None:
 

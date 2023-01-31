@@ -2,15 +2,15 @@
     "title_label": {
         
         "colours": {
-            "dark_bg": "#25292e",
-            "normal_text": "#c5cbd8",
+            "dark_bg": "#0000",
+            "normal_text": "#ffcd34,#34cede,0",
             "text_shadow": "#505050"
         },
         
         "font": {
             "name": "FiraCode",
-            "size": "55",
-            "bold": "1",
+            "size": "95",
+            "bold": "0",
             "italic": "0",
             "regular_path": "../res/fonts/FiraCode-Regular.ttf"
         },
@@ -25,20 +25,22 @@
     "button": {
         
         "colours": {
-            "dark_bg": "#1329cd",
-            "normal_text": "#c5cbd8",
+            "normal_bg": "#d0d0d0",
+            "normal_text": "#df7681",
             "text_shadow": "#505050"
         },
         
         "font": {
             "name": "FiraCode",
-            "size": "24",
+            "size": "45",
             "bold": "0",
             "italic": "0",
             "regular_path": "../res/fonts/FiraCode-Regular.ttf"
         },
     
         "misc": {
+            "shape": "rounded_rectangle",
+            "shape_corner_radius": "24",
             "text_shadow": "1",
             "text_shadow_size": "1",
             "text_shadow_offset": "1,1"

@@ -13,7 +13,6 @@ from states.base_state import Base_State
 
 
 class Start_State(Base_State):
-    # TODO: add themes for buttons (play, quit) and improve labels (title)
     
     def __init__(self, game: Game) -> None:
         super().__init__(game)
@@ -41,7 +40,7 @@ class Start_State(Base_State):
         )
         
         self.quit_button : pgg.elements.UIButton = pgg.elements.UIButton(
-            relative_rect= pg.Rect((0, self.play_button.relative_rect.height), (-1, -1)),
+            relative_rect= pg.Rect((0, self.play_button.relative_rect.height + 10), (-1, -1)),
             text= "QUIT", manager= self.manager,
             object_id= "button",
             anchors= {
